@@ -1,0 +1,34 @@
+{
+  "name": "all-in-1-cli",
+  "version": "1.8.4",
+  "description": "All in one is a CLI to make your journey in web development less painful (it makes your life way easier).",
+  "main": "./bin/app.js",
+  "bin": {
+    "all-in-1-cli": "./bin/app.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ru44/All-In-One-Cli.git"
+  },
+  "keywords": [
+    "cli",
+    "nodeJs",
+    "javascript",
+    "automation"
+  ],
+  "author": "RuM",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ru44/All-In-One-Cli/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/ru44/All-In-One-Cli#readme",
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "inquirer": "^9.1.1",
+    "shelljs": "^0.8.5"
+  }
+}
