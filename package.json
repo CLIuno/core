@@ -1,0 +1,32 @@
+{
+  "name": "all-in-one-cli",
+  "version": "1.0.0",
+  "description": "All in one Cli to automate things (I will think how to write it in better way in the feature ~inshallah).",
+  "main": "./bin/app.js",
+  "bin": {
+    "acli": "./bin/app.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ru44/All-In-One-Cli.git"
+  },
+  "keywords": [
+    "cli",
+    "nodeJs",
+    "javascript"
+  ],
+  "author": "RuM",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ru44/All-In-One-Cli/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/ru44/All-In-One-Cli#readme",
+  "dependencies": {
+    "inquirer": "^9.1.1",
+    "shelljs": "^0.8.5"
+  }
+}
