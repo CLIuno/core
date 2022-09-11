@@ -46,6 +46,13 @@ inquirer
             type: 'checkbox',
             name: 'checkboxTest',
             message: 'Conflict on `file.js`: ',
+            choices: [
+                {
+                    key: 'y',
+                    name: 'Overwrite',
+                    value: 'overwrite',
+                }
+            ]
         },
         {
             type: 'confirm',
