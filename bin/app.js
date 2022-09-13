@@ -3,65 +3,14 @@
 import inquirer from 'inquirer';
 import shell from 'shelljs';
 
+import { questions, questionsTs } from '../utils/questions.js';
+
 inquirer
-    .prompt([
-        {
-            type: 'list',
-            name: 'framework',
-            message: 'Choose the JS framework which you are using:',
-            choices: ['VueJs', 'NuxtJS', 'React', 'NextJS', 'Angular', 'Svelte', ''],
-        }, {
-            type: 'list',
-            name: 'packageManager',
-            message: 'Choose the package manager which you are using:',
-            choices: ['npm', 'yarn'],
-        },
-        {
-            type: 'input',
-            name: 'name',
-            message: 'Enter your name:',
-        },
-        {
-            type: 'password',
-            name: 'password',
-            message: 'Enter your password:',
-        },
-        {
-            type: 'editor',
-            name: 'bio',
-            message: 'Tell us about yourself:',
-        },
-        {
-            type: 'expand',
-            name: 'expandTest',
-            message: 'Conflict on `file.js`: ',
-            choices: [
-                {
-                    key: 'y',
-                    name: 'Overwrite',
-                    value: 'overwrite',
-                }],
-        },
-        {
-            type: 'checkbox',
-            name: 'checkboxTest',
-            message: 'Conflict on `file.js`: ',
-            choices: [
-                {
-                    key: 'y',
-                    name: 'Overwrite',
-                    value: 'overwrite',
-                }
-            ]
-        },
-        {
-            type: 'confirm',
-            name: 'isConfirmed',
-            message: 'Are you sure you want to continue?',
-        },
-    ])
+    .prompt(questions)
     .then((answers) => {
-        console.log(answers);
+        if (answers['Design Pattern'] === 'MVC') {
+
+        }
     })
     .catch((error) => {
         if (error.isTtyError) {
