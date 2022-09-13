@@ -3,9 +3,10 @@
 import inquirer from 'inquirer';
 import shell from 'shelljs';
 import chalk from 'chalk';
+import arg from 'arg';
+import { questions, questionsTs, questionsMVC } from '../utils/questions.js';
 
 
-import { questions, questionsTs } from '../utils/questions.js';
 
 inquirer
     .prompt(questions)
