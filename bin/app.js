@@ -2,6 +2,8 @@
 
 import inquirer from 'inquirer';
 import shell from 'shelljs';
+import chalk from 'chalk';
+
 
 import { questions, questionsTs } from '../utils/questions.js';
 
