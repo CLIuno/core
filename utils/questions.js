@@ -30,6 +30,15 @@ const questions = [
     }
 ];
 
+const questionsMVC = [
+    {
+        type: 'list',
+        name: 'MVC framework',
+        message: 'Choose the MVC framework which you want to use:',
+        choices: ['TallStack']
+    }
+];
+
 const questionsTs = [
     {
         type: 'list',
@@ -43,3 +52,5 @@ const _questions = questions;
 export { _questions as questions };
 const _questionsTs = questionsTs;
 export { _questionsTs as questionsTs };
+const _questionsMVC = questionsMVC;
+export { _questionsMVC as questionsMVC };

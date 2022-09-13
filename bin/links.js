@@ -17,4 +17,5 @@ let links = new Map([
     ['TallStack','https://tallstack.dev/'],
 ]);
 
-export default links;
+const _links = links;
+export { _links as links };
