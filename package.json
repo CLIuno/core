@@ -1,6 +1,6 @@
 {
-  "name": "all-in-one-cli",
-  "version": "1.0.0",
+  "name": "all-in-1-cli",
+  "version": "1.0.1",
   "description": "All in one Cli to automate things (I will think how to write it in better way in the feature ~inshallah).",
   "main": "./bin/app.js",
   "bin": {
@@ -16,7 +16,8 @@
   "keywords": [
     "cli",
     "nodeJs",
-    "javascript"
+    "javascript",
+    "automation"
   ],
   "author": "RuM",
   "license": "MIT",
@@ -26,9 +27,7 @@
   "type": "module",
   "homepage": "https://github.com/ru44/All-In-One-Cli#readme",
   "dependencies": {
-    "arg": "^5.0.2",
     "chalk": "^5.0.1",
-    "esm": "^3.2.25",
     "inquirer": "^9.1.1",
     "shelljs": "^0.8.5"
   }
