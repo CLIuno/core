@@ -4,32 +4,40 @@ import inquirer from 'inquirer';
 import shell from 'shelljs';
 const path = process.cwd();
 import chalk from 'chalk';
-import arg from 'arg';
 import * as qs from '../utils/questions.js';
 import { links } from '../utils/links.js';
 
-
+console.log(chalk.green("Hello, I'm a CLI for creating a new project"));
 inquirer
     .prompt(qs.questionsDP)
     .then((answers) => {
         if (answers['Design Pattern'] === 'MVC') {
+            console.log(chalk.yellow("🚧 Only TallStack is available for MVC with SQLite 🚧"));
             inquirer.prompt(qs.questionsMVC).then((answers) => {
                 if (answers['MVC'] === 'TallStack') {
-                    // here is the problem
-                    console.log("YOU ARE USING TALLSTACK");
+                    shell.exec(`mkdir ${answers['MVC']}`);
+                    console.log(chalk.green('📁 Created a folder for the project'));
+                    shell.exec(`git clone ${links.get('TallStack')} ${answers['MVC']}`);
+                    shell.cd(`${path}/${answers['MVC']}`);
+                    console.log(chalk.green('🚀 Installing dependencies'));
+                    shell.exec(`npm i`);
+                    console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
                 } else {
-                    console.log('🔜 DjangoMTV is coming soon');
+                    console.log(chalk.red('🚧 This feature is not available yet'));
                 }
-                console.log("Only SQLite is supported for now");
-                inquirer.prompt(qs.questionsDB).then((answers) => {
-                    if (answers['database'] === 'MongoDB') {
-                        console.log("Sorry MongoDB is not supported yet");
-                    } else if (answers['database'] === 'PostgreSQL') {
-                        console.log("Sorry PostgreSQL is not supported yet");
-                    } else if (answers['database'] === 'SQLite') {
-                        console.log("YOU ARE USING SQLite");
-                    }
-                });
+
+                // This Part is still just idea and not implemented yet
+
+                // console.log(chalk.red('🚧 This Projects is still under development'));
+                //     inquirer.prompt(qs.questionsDB).then((answers) => {
+                //         if (answers['database'] === 'MongoDB') {
+                //             console.log("Sorry MongoDB is not supported yet");
+                //         } else if (answers['database'] === 'PostgreSQL') {
+                //             console.log("Sorry PostgreSQL is not supported yet");
+                //         } else if (answers['database'] === 'SQLite') {
+                //             console.log("YOU ARE USING SQLite");
+                //         }
+                //     });
             });
         } else {
             inquirer.prompt(qs.questionsRestApi).then((answers) => {
@@ -63,24 +71,24 @@ inquirer
                 } else if (answers['backend'] === 'Dotnet Core') {
                     console.log("YOU ARE USING Dotnet Core");
                 }
-                console.log("Only SQLite is supported for now");
-                inquirer.prompt(qs.questionsDB).then((answers) => {
-                    if (answers['database'] === 'MongoDB') {
-                        console.log("Sorry MongoDB is not supported yet");
-                    } else if (answers['database'] === 'PostgreSQL') {
-                        console.log("Sorry PostgreSQL is not supported yet");
-                    } else if (answers['database'] === 'SQLite') {
-                        console.log("YOU ARE USING SQLite");
-                    }
-                    console.log("Only NPM is supported for now");
-                    inquirer.prompt(qs.questionsPM).then((answers) => {
-                        if (answers['package manager'] === 'npm') {
-                            console.log("YOU ARE USING npm");
-                        } else if (answers['package manager'] === 'yarn') {
-                            console.log("Sorry yarn is not supported yet");
-                        }
-                    });
-                });
+                console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
+                // inquirer.prompt(qs.questionsDB).then((answers) => {
+                //     if (answers['database'] === 'MongoDB') {
+                //         console.log("Sorry MongoDB is not supported yet");
+                //     } else if (answers['database'] === 'PostgreSQL') {
+                //         console.log("Sorry PostgreSQL is not supported yet");
+                //     } else if (answers['database'] === 'SQLite') {
+                //         console.log("YOU ARE USING SQLite");
+                //     }
+                console.log(chalk.red("Only NPM is supported for now"));
+                // inquirer.prompt(qs.questionsPM).then((answers) => {
+                //     if (answers['package manager'] === 'npm') {
+                //         console.log("YOU ARE USING npm");
+                //     } else if (answers['package manager'] === 'yarn') {
+                //         console.log("Sorry yarn is not supported yet");
+                //     }
+                // });
+                // });
             });
 
         }

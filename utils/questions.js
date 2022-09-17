@@ -46,7 +46,7 @@ const questionsDB = [
         type: 'list',
         name: 'database',
         message: 'Choose the database which you want to use:',
-        choices: ['MongoDB', 'PostgreSQL', 'SQLite'],
+        choices: ['MongoDB', 'SQLite'],
     }
 ];
 
