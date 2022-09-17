@@ -4,7 +4,7 @@
   "description": "All in one Cli to automate things (I will think how to write it in better way in the feature ~inshallah).",
   "main": "./bin/app.js",
   "bin": {
-    "aiocli": "./bin/app.js"
+    "all-in-1-cli": "./bin/app.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
