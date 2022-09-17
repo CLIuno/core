@@ -1,6 +1,6 @@
 {
   "name": "all-in-1-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "All in one Cli to automate things (I will think how to write it in better way in the feature ~inshallah).",
   "main": "./bin/app.js",
   "bin": {
