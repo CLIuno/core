@@ -4,12 +4,12 @@ simple cli for all in one project
 ## Installation
 
 ```bash
-$ npm install -g aiocli
+$ npm install -g all-in-1-cli
 ```
 
 ## Running the app
 
 ```bash
 # run it
-$ aiocli
+$ all-in-1-cli
 ```
