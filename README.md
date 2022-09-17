@@ -11,5 +11,5 @@ $ npm install -g all-in-1-cli
 
 ```bash
 # run it
-$ aiocli
+$ all-in-1-cli
 ```
