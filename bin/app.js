@@ -40,6 +40,9 @@ inquirer
                 //     });
             });
         } else {
+            console.log(chalk.red('🚧 Only VueJS With ExpressJs is available for RESTful API 🚧'));
+            console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
+            console.log(chalk.red("🚧 Only NPM is supported for now 🚧"));
             inquirer.prompt(qs.questionsRestApi).then((answers) => {
                 if (answers['frontend'] === 'VueJs') {
                     console.log("YOU ARE USING VUEJS");
@@ -71,7 +74,6 @@ inquirer
                 } else if (answers['backend'] === 'Dotnet Core') {
                     console.log("YOU ARE USING Dotnet Core");
                 }
-                console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
                 // inquirer.prompt(qs.questionsDB).then((answers) => {
                 //     if (answers['database'] === 'MongoDB') {
                 //         console.log("Sorry MongoDB is not supported yet");
@@ -80,7 +82,6 @@ inquirer
                 //     } else if (answers['database'] === 'SQLite') {
                 //         console.log("YOU ARE USING SQLite");
                 //     }
-                console.log(chalk.red("Only NPM is supported for now"));
                 // inquirer.prompt(qs.questionsPM).then((answers) => {
                 //     if (answers['package manager'] === 'npm') {
                 //         console.log("YOU ARE USING npm");
