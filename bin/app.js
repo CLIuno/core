@@ -83,7 +83,22 @@ inquirer
                 // } else if (answers['frontend'] === 'Svelte') {
 
                 if (answers['frontend'] === 'VueJs') {
-                    console.log("YOU ARE USING VUEJS");
+                    shell.exec(`mkdir ${answers['frontend']}`);
+                    console.log(chalk.green('📁 Created a folder for the backend project'));
+                    console.log(chalk.green('cloning the backend project from GitHub 🚀'));
+                    shell.exec(`git clone ${links.get('ExpressJs')} ${answers['backend']}`);
+                    shell.cd(`${path}/${answers['backend']}`);
+                    console.log(chalk.green('🚀 Installing dependencies'));
+                    shell.exec(`npm i`);
+                    console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
+                    console.log(chalk.green('\nMade with ❤️  by @ru44'));
+                    inquirer.prompt(qs.questionsRun).then((answers) => {
+                        if (answers['Run Project']) {
+                            shell.exec(`npm run dev`);
+                        } else {
+                            console.log(chalk.green('👋 Bye'));
+                        }
+                    });
                 }
                 else {
                     console.log(chalk.red('🚧 This feature is not available yet'));
