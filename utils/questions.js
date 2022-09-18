@@ -7,7 +7,13 @@ const questionsDP = [
         choices: ['MVC', 'RESTful API'],
     }
 ];
-
+const questionsRun = [
+    {
+        type: 'confirm',
+        name: 'Run Project',
+        message: 'Do you want to run the project?',
+    },
+];
 const questionsMVC = [
     {
         type: 'list',
@@ -60,3 +66,5 @@ const _questionsPM = questionsPM;
 export { _questionsPM as questionsPM };
 const _questionsDP = questionsDP;
 export { _questionsDP as questionsDP };
+const _questionsRun = questionsRun;
+export { _questionsRun as questionsRun };
