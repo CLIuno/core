@@ -27,6 +27,7 @@ inquirer
                     console.log(chalk.green('🚀 Installing dependencies'));
                     shell.exec(`npm i`);
                     console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
+                    console.log(chalk.green('\nMade with ❤️  by @ru44'));
                 } else {
                     console.log(chalk.red('🚧 This feature is not available yet'));
                 }
@@ -49,28 +50,32 @@ inquirer
             console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
             console.log(chalk.red("🚧 Only NPM is supported for now 🚧"));
             inquirer.prompt(qs.questionsRestApi).then((answers) => {
-                if (answers['frontend'] === 'VueJs') {
-                    console.log("YOU ARE USING VUEJS");
-                    // This Part is still just idea and not implemented yet
-
-                    // } else if (answers['frontend'] === 'NuxtJS') {
-                    //     console.log(chalk.red('🚧 This feature is not available yet'));
-                    // } else if (answers['frontend'] === 'React') {
-                    //     console.log(chalk.red('🚧 This feature is not available yet'));
-                    // } else if (answers['frontend'] === 'NextJS') {
-                    //     console.log(chalk.red('🚧 This feature is not available yet'));
-                    // } else if (answers['frontend'] === 'Angular') {
-                    //     console.log(chalk.red('🚧 This feature is not available yet'));
-                    // } else if (answers['frontend'] === 'Svelte') {
-                }
-                else {
-                    console.log(chalk.red('🚧 This feature is not available yet'));
-                }
                 if (answers['backend'] === 'Express') {
+                    shell.exec(`mkdir ${answers['backend']}`);
+                    console.log(chalk.green('📁 Created a folder for the backend project'));
                     console.log("you are using Express");
                 } else {
                     console.log(chalk.red('🚧 This feature is not available yet'));
                 }
+                // This Part is still just idea and not implemented yet
+
+                // } else if (answers['frontend'] === 'NuxtJS') {
+                //     console.log(chalk.red('🚧 This feature is not available yet'));
+                // } else if (answers['frontend'] === 'React') {
+                //     console.log(chalk.red('🚧 This feature is not available yet'));
+                // } else if (answers['frontend'] === 'NextJS') {
+                //     console.log(chalk.red('🚧 This feature is not available yet'));
+                // } else if (answers['frontend'] === 'Angular') {
+                //     console.log(chalk.red('🚧 This feature is not available yet'));
+                // } else if (answers['frontend'] === 'Svelte') {
+
+                if (answers['frontend'] === 'VueJs') {
+                    console.log("YOU ARE USING VUEJS");
+                }
+                else {
+                    console.log(chalk.red('🚧 This feature is not available yet'));
+                }
+
                 // This Part is still just idea and not implemented yet
 
                 // } else if (answers['backend'] === 'NestJS') {
@@ -106,7 +111,6 @@ inquirer
             });
 
         }
-        console.log(chalk.green('Made with ❤️ by @ru44'));
     })
     .catch((error) => {
         if (error.isTtyError) {
@@ -115,4 +119,5 @@ inquirer
             console.log("Something else went wrong");
         }
     });
+
 
