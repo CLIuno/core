@@ -23,19 +23,22 @@ const questionsMVC = [
     }
 ];
 
-const questionsRestApi = [
+const questionsRestApiF = [
     {
         type: 'list',
         name: 'frontend',
         message: 'Choose the front framework which you want to use:',
-        choices: ['VueJs', 'NuxtJS', 'React', 'NextJS', 'Angular', 'Svelte'],
+        choices: ['VueJs', 'NuxtJs', 'React', 'NextJs', 'Angular', 'Svelte'],
     },
+];
+
+const questionsRestApiB = [
     {
         type: 'list',
         name: 'backend',
         message: 'Choose the backend framework which you want to use:',
-        choices: ['Express', 'NestJS', 'AdonisJS', 'Fastify', 'Django', 'Laravel', 'Spring Boot', 'Dotnet Core',],
-    },
+        choices: ['Express', 'NestJs', 'AdonisJs', 'Fastify', 'Django', 'Laravel', 'Spring Boot', 'Dotnet Core',],
+    }
 ];
 
 const questionsPM = [
@@ -58,8 +61,6 @@ const questionsDB = [
 
 const _questionsMVC = questionsMVC;
 export { _questionsMVC as questionsMVC };
-const _questionsRestApi = questionsRestApi;
-export { _questionsRestApi as questionsRestApi };
 const _questionsDB = questionsDB;
 export { _questionsDB as questionsDB };
 const _questionsPM = questionsPM;
@@ -68,3 +69,7 @@ const _questionsDP = questionsDP;
 export { _questionsDP as questionsDP };
 const _questionsRun = questionsRun;
 export { _questionsRun as questionsRun };
+const _questionsRestApiF = questionsRestApiF;
+export { _questionsRestApiF as questionsRestApiF };
+const _questionsRestApiB = questionsRestApiB;
+export { _questionsRestApiB as questionsRestApiB };

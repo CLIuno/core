@@ -49,7 +49,7 @@ inquirer
             console.log(chalk.red('🚧 Only VueJS With ExpressJs is available for RESTful API 🚧'));
             console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
             console.log(chalk.red("🚧 Only NPM is supported for now 🚧"));
-            inquirer.prompt(qs.questionsRestApi).then((answers) => {
+            inquirer.prompt(qs.questionsRestApiF).then((answers) => {
                 if (answers['backend'] === 'Express') {
                     shell.exec(`mkdir ${answers['backend']}`);
                     console.log(chalk.green('📁 Created a folder for the backend project'));
@@ -86,8 +86,8 @@ inquirer
                     shell.exec(`mkdir ${answers['frontend']}`);
                     console.log(chalk.green('📁 Created a folder for the backend project'));
                     console.log(chalk.green('cloning the backend project from GitHub 🚀'));
-                    shell.exec(`git clone ${links.get('ExpressJs')} ${answers['backend']}`);
-                    shell.cd(`${path}/${answers['backend']}`);
+                    shell.exec(`git clone ${links.get('VueJs')} ${answers['frontend']}`);
+                    shell.cd(`${path}/${answers['frontend']}`);
                     console.log(chalk.green('🚀 Installing dependencies'));
                     shell.exec(`npm i`);
                     console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
