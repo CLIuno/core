@@ -49,7 +49,7 @@ inquirer
             console.log(chalk.red('🚧 Only VueJS With ExpressJs is available for RESTful API 🚧'));
             console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
             console.log(chalk.red("🚧 Only NPM is supported for now 🚧"));
-            inquirer.prompt(qs.questionsRestApiF).then((answers) => {
+            inquirer.prompt(qs.questionsRestApiB).then((answers) => {
                 if (answers['backend'] === 'Express') {
                     shell.exec(`mkdir ${answers['backend']}`);
                     console.log(chalk.green('📁 Created a folder for the backend project'));
@@ -81,28 +81,30 @@ inquirer
                 // } else if (answers['frontend'] === 'Angular') {
                 //     console.log(chalk.red('🚧 This feature is not available yet'));
                 // } else if (answers['frontend'] === 'Svelte') {
+                inquirer.prompt(qs.questionsRestApiB).then((answers) => {
 
-                if (answers['frontend'] === 'VueJs') {
-                    shell.exec(`mkdir ${answers['frontend']}`);
-                    console.log(chalk.green('📁 Created a folder for the backend project'));
-                    console.log(chalk.green('cloning the backend project from GitHub 🚀'));
-                    shell.exec(`git clone ${links.get('VueJs')} ${answers['frontend']}`);
-                    shell.cd(`${path}/${answers['frontend']}`);
-                    console.log(chalk.green('🚀 Installing dependencies'));
-                    shell.exec(`npm i`);
-                    console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
-                    console.log(chalk.green('\nMade with ❤️  by @ru44'));
-                    inquirer.prompt(qs.questionsRun).then((answers) => {
-                        if (answers['Run Project']) {
-                            shell.exec(`npm run dev`);
-                        } else {
-                            console.log(chalk.green('👋 Bye'));
-                        }
-                    });
-                }
-                else {
-                    console.log(chalk.red('🚧 This feature is not available yet'));
-                }
+                    if (answers['frontend'] === 'VueJs') {
+                        shell.exec(`mkdir ${answers['frontend']}`);
+                        console.log(chalk.green('📁 Created a folder for the backend project'));
+                        console.log(chalk.green('cloning the backend project from GitHub 🚀'));
+                        shell.exec(`git clone ${links.get('VueJs')} ${answers['frontend']}`);
+                        shell.cd(`${path}/${answers['frontend']}`);
+                        console.log(chalk.green('🚀 Installing dependencies'));
+                        shell.exec(`npm i`);
+                        console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
+                        console.log(chalk.green('\nMade with ❤️  by @ru44'));
+                        inquirer.prompt(qs.questionsRun).then((answers) => {
+                            if (answers['Run Project']) {
+                                shell.exec(`npm run dev`);
+                            } else {
+                                console.log(chalk.green('👋 Bye'));
+                            }
+                        });
+                    }
+                    else {
+                        console.log(chalk.red('🚧 This feature is not available yet'));
+                    }
+                });
 
                 // This Part is still just idea and not implemented yet
 
