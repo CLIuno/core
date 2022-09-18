@@ -1,5 +1,5 @@
 let links = new Map([
-    ['VueJs', 'https://github.com/ru44/frontVue.git'],
+    ['VueJs', 'https://github.com/ru44/frontendVue.git'],
     ['NuxtJs', 'https://github.com/ru44/frontendNuxt.git'],
     ['ReactJs', 'https://github.com/ru44/frontendReact.git'],
     ['NextJs', 'https://github.com/ru44/frontendNext.git/'],

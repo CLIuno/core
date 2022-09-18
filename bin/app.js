@@ -60,13 +60,9 @@ inquirer
                     shell.exec(`npm i`);
                     console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
                     console.log(chalk.green('\nMade with ❤️  by @ru44'));
-                    inquirer.prompt(qs.questionsRun).then((answers) => {
-                        if (answers['Run Project']) {
-                            shell.exec(`npm run dev`);
-                        } else {
-                            console.log(chalk.green('👋 Bye'));
-                        }
-                    });
+                    shell.rm('-rf', '.git');
+                    shell.rm('-rf', '.github');
+                    shell.cd(`..`);
                 } else {
                     console.log(chalk.red('🚧 This feature is not available yet'));
                 }
@@ -81,7 +77,7 @@ inquirer
                 // } else if (answers['frontend'] === 'Angular') {
                 //     console.log(chalk.red('🚧 This feature is not available yet'));
                 // } else if (answers['frontend'] === 'Svelte') {
-                inquirer.prompt(qs.questionsRestApiB).then((answers) => {
+                inquirer.prompt(qs.questionsRestApiF).then((answers) => {
 
                     if (answers['frontend'] === 'VueJs') {
                         shell.exec(`mkdir ${answers['frontend']}`);
@@ -93,13 +89,15 @@ inquirer
                         shell.exec(`npm i`);
                         console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
                         console.log(chalk.green('\nMade with ❤️  by @ru44'));
-                        inquirer.prompt(qs.questionsRun).then((answers) => {
-                            if (answers['Run Project']) {
-                                shell.exec(`npm run dev`);
-                            } else {
-                                console.log(chalk.green('👋 Bye'));
-                            }
-                        });
+                        shell.rm('-rf', '.git');
+                        shell.rm('-rf', '.github');
+                        // inquirer.prompt(qs.questionsRun).then((answers) => {
+                        //     if (answers['Run Project']) {
+                        //         shell.exec(`npm run dev`);
+                        //     } else {
+                        //         console.log(chalk.green('👋 Bye'));
+                        //     }
+                        // });
                     }
                     else {
                         console.log(chalk.red('🚧 This feature is not available yet'));
