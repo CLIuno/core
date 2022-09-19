@@ -28,6 +28,9 @@ inquirer
                     shell.exec(`npm i`);
                     console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
                     console.log(chalk.green('\nMade with ❤️  by @ru44'));
+                    shell.rm('-rf', '.git');
+                    shell.rm('-rf', '.github');
+                    shell.cd(`..`);
                 } else {
                     console.log(chalk.red('🚧 This feature is not available yet'));
                 }
