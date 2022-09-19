@@ -26,6 +26,7 @@ inquirer
                     shell.exec(`git clone ${links.get('TallStack')} ${answers['MVC']}`);
                     shell.cd(`${path}/${answers['MVC']}`);
                     console.log(chalk.green('🚀 Installing dependencies'));
+                    shell.exec(`composer install`);
                     shell.exec(`npm i`);
                     console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
                     console.log(chalk.green('\nMade with ❤️  by @ru44'));

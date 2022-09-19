@@ -7,7 +7,7 @@ import { links } from '../utils/links.js';
 
 export function frontEndInstall(fmName) {
     shell.exec(`mkdir ${fmName}`);
-    console.log(chalk.green('cloning the backend project from GitHub 🚀'));
+    console.log(chalk.green('cloning the frontend project from GitHub 🚀'));
     shell.exec(`git clone ${links.get(fmName)} ${fmName}`);
     shell.cd(`${path}/${fmName}`);
     console.log(chalk.green('🚀 Installing dependencies'));
