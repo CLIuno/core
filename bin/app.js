@@ -69,17 +69,6 @@ inquirer
                 } else {
                     console.log(chalk.red('🚧 This feature is not available yet'));
                 }
-                // This Part is still just idea and not implemented yet
-
-                // } else if (answers['frontend'] === 'NuxtJS') {
-                //     console.log(chalk.red('🚧 This feature is not available yet'));
-                // } else if (answers['frontend'] === 'React') {
-                //     console.log(chalk.red('🚧 This feature is not available yet'));
-                // } else if (answers['frontend'] === 'NextJS') {
-                //     console.log(chalk.red('🚧 This feature is not available yet'));
-                // } else if (answers['frontend'] === 'Angular') {
-                //     console.log(chalk.red('🚧 This feature is not available yet'));
-                // } else if (answers['frontend'] === 'Svelte') {
                 inquirer.prompt(qs.questionsRestApiF).then((answers) => {
 
                     if (answers['frontend'] === 'VueJs') {
