@@ -11,6 +11,7 @@ const path = process.cwd();
 import chalk from 'chalk';
 import * as qs from '../utils/questions.js';
 import { links } from '../utils/links.js';
+import { frontEndInstall } from '../utils/fGitHandler.js';
 
 console.log(chalk.green("Hello, I'm a CLI for creating a new project"));
 inquirer
@@ -70,30 +71,8 @@ inquirer
                     console.log(chalk.red('🚧 This feature is not available yet'));
                 }
                 inquirer.prompt(qs.questionsRestApiF).then((answers) => {
-
-                    if (answers['frontend'] === 'VueJs') {
-                        frontEndInstall(answers, 'VueJs');
-                        // inquirer.prompt(qs.questionsRun).then((answers) => {
-                        //     if (answers['Run Project']) {
-                        //         shell.exec(`npm run dev`);
-                        //     } else {
-                        //         console.log(chalk.green('👋 Bye'));
-                        //     }
-                        // });
-                    } else if (answers['frontend'] === 'NuxtJs') {
-                        frontEndInstall(answers, 'NuxtJs');
-                    } else if (answers['frontend'] === 'Svelte') {
-                        frontEndInstall(answers, 'Svelte');
-                    } else if (answers['frontend'] === 'React') {
-                        frontEndInstall(answers, 'ReactJs');
-                    } else if (answers['frontend'] === 'NextJs') {
-                        frontEndInstall(answers, 'NextJs');
-                    } else if (answers['frontend'] === 'Angular') {
-                        frontEndInstall(answers, 'Angular');
-                    }
-                    else {
-                        console.log(chalk.red('🚧 Something Wrong You Should Not See This'));
-                    }
+                    console.log(chalk.green('📁 Created a folder for the frontend project'));
+                    frontEndInstall(answers['frontend']);
                 });
 
                 // This Part is still just idea and not implemented yet
@@ -137,19 +116,4 @@ inquirer
             console.log("Something else went wrong");
         }
     });
-
-function frontEndInstall(answers, fmName) {
-    shell.exec(`mkdir ${answers['frontend']}`);
-    console.log(chalk.green('📁 Created a folder for the backend project'));
-    console.log(chalk.green('cloning the backend project from GitHub 🚀'));
-    shell.exec(`git clone ${links.get(fmName)} ${answers['frontend']}`);
-    shell.cd(`${path}/${answers['frontend']}`);
-    console.log(chalk.green('🚀 Installing dependencies'));
-    shell.exec(`npm i`);
-    console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
-    console.log(chalk.green('\nMade with ❤️  by @ru44'));
-    shell.rm('-rf', '.git');
-    shell.rm('-rf', '.github');
-    shell.cd(`..`);
-}
 

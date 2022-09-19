@@ -19,7 +19,7 @@ const questionsMVC = [
         type: 'list',
         name: 'MVC',
         message: 'Choose the MVC framework which you want to use:',
-        choices: ['TallStack', 'DjangoMTV (coming soon)'],
+        choices: ['TallStack', 'DjangoMTV'],
     }
 ];
 
@@ -28,7 +28,7 @@ const questionsRestApiF = [
         type: 'list',
         name: 'frontend',
         message: 'Choose the front framework which you want to use:',
-        choices: ['VueJs', 'NuxtJs', 'React', 'NextJs', 'Angular', 'Svelte'],
+        choices: ['VueJs', 'NuxtJs', 'ReactJs', 'NextJs', 'Angular', 'Svelte'],
     },
 ];
 
@@ -37,7 +37,7 @@ const questionsRestApiB = [
         type: 'list',
         name: 'backend',
         message: 'Choose the backend framework which you want to use:',
-        choices: ['Express', 'NestJs', 'AdonisJs', 'Fastify', 'Django', 'Laravel', 'Spring Boot', 'Dotnet Core',],
+        choices: ['ExpressJs', 'NestJs', 'AdonisJs', 'Fastify', 'Django', 'Laravel', 'Spring Boot', 'DotNet',],
     }
 ];
 
