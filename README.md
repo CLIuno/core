@@ -1,5 +1,5 @@
-# All-In-One-Cli
-simple cli for all in one project
+# All-In-One-CLI
+simple CLI for all in one project
 
 ## Installation
 
@@ -10,6 +10,7 @@ or Using Yarn
 
 ```bash
 $ yarn global add all-in-1-cli
+```
 
 ## Running the app
 
