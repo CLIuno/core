@@ -11,7 +11,8 @@ const path = process.cwd();
 import chalk from 'chalk';
 import * as qs from '../utils/questions.js';
 import { links } from '../utils/links.js';
-import { frontEndInstall } from '../utils/fGitHandler.js';
+import * as handler from '../utils/GitHandler.js';
+
 
 console.log(chalk.green("Hello, I'm a CLI for creating a new project"));
 inquirer
@@ -53,27 +54,24 @@ inquirer
         } else {
             console.log(chalk.red('🚧 Only ExpressJs is available for RESTful API 🚧'));
             console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
-            console.log(chalk.red("🚧 Only NPM is supported for now 🚧"));
             inquirer.prompt(qs.questionsRestApiB).then((answers) => {
-                if (answers['backend'] === 'Express') {
-                    shell.exec(`mkdir ${answers['backend']}`);
-                    console.log(chalk.green('📁 Created a folder for the backend project'));
-                    console.log(chalk.green('cloning the backend project from GitHub 🚀'));
-                    shell.exec(`git clone ${links.get('ExpressJs')} ${answers['backend']}`);
-                    shell.cd(`${path}/${answers['backend']}`);
-                    console.log(chalk.green('🚀 Installing dependencies'));
-                    shell.exec(`npm i`);
-                    console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
-                    console.log(chalk.green('\nMade with ❤️  by @ru44'));
-                    shell.rm('-rf', '.git');
-                    shell.rm('-rf', '.github');
-                    shell.cd(`..`);
-                } else {
+                console.log(chalk.green('📁 Created a folder for the backend project'));
+                if (answers['backend'] === 'ExpressJs') {
+                    handler.backendInstall('ExpressJs');
+                } else if (answers['backend'] === 'Fastify') {
+                    handler.backendInstall('Fastify');
+                } else if (answers['backend'] === 'NestJs') {
+                    handler.backendInstall('NestJs');
+                } else if (answers['backend'] === 'AdonisJs') {
+                    handler.backendInstall('AdonisJs');
+                }
+                else {
                     console.log(chalk.red('🚧 This feature is not available yet'));
                 }
+
                 inquirer.prompt(qs.questionsRestApiF).then((answers) => {
                     console.log(chalk.green('📁 Created a folder for the frontend project'));
-                    frontEndInstall(answers['frontend']);
+                    handler.frontEndInstall(answers['frontend']);
                 });
 
                 // This Part is still just idea and not implemented yet
