@@ -49,7 +49,7 @@ inquirer
                 //     });
             });
         } else {
-            console.log(chalk.red('🚧 Only VueJS With ExpressJs is available for RESTful API 🚧'));
+            console.log(chalk.red('🚧 Only ExpressJs is available for RESTful API 🚧'));
             console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
             console.log(chalk.red("🚧 Only NPM is supported for now 🚧"));
             inquirer.prompt(qs.questionsRestApiB).then((answers) => {
