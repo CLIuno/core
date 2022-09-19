@@ -6,10 +6,6 @@ simple cli for all in one project
 ```bash
 $ npm install -g all-in-1-cli
 ```
-or Using Yarn
-
-```bash
-$ yarn global add all-in-1-cli
 
 ## Running the app
 
