@@ -1,10 +1,6 @@
 #! /usr/bin/env node
 
 
-// Todo: Clean up this file
-// Todo: Add comments
-// Todo: Add more error handling
-
 import inquirer from 'inquirer';
 import shell from 'shelljs';
 const path = process.cwd();
@@ -14,7 +10,7 @@ import { links } from '../utils/links.js';
 import * as handler from '../utils/GitHandler.js';
 
 
-console.log(chalk.green("Hello, I'm a CLI for creating a new project"));
+console.log(chalk.green("Hello 👋, I'm a AIO CLI for creating a new project and make your pain less 🚀"));
 inquirer
     .prompt(qs.questionsDP)
     .then((answers) => {
@@ -31,11 +27,12 @@ inquirer
                     shell.exec(`npm i`);
                     console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
                     console.log(chalk.green('\nMade with ❤️  by @ru44'));
+                    console.log(chalk.bgGreen("Please donate to the project if you like it ❤️"));
                     shell.rm('-rf', '.git');
                     shell.rm('-rf', '.github');
                     shell.cd(`..`);
                 } else {
-                    console.log(chalk.red('🚧 This feature is not available yet'));
+                    console.log(chalk.red('🚧 This feature is not available yet 🚧'));
                 }
 
                 // This Part is still just idea and not implemented yet
@@ -52,7 +49,7 @@ inquirer
                 //     });
             });
         } else {
-            console.log(chalk.red('🚧 Only ExpressJs is available for RESTful API 🚧'));
+            console.log(chalk.red('🚧 Laravel and Django and Spring Boot and Dotnet is not available for RESTful API 🚧'));
             console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
             inquirer.prompt(qs.questionsRestApiB).then((answers) => {
                 console.log(chalk.green('📁 Created a folder for the backend project'));
