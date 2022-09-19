@@ -6,7 +6,7 @@ simple CLI for all in one project
 ```bash
 $ npm install -g all-in-1-cli
 ```
-or Using Yarn
+or by Using Yarn
 
 ```bash
 $ yarn global add all-in-1-cli
