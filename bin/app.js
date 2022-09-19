@@ -73,37 +73,6 @@ inquirer
                     console.log(chalk.green('📁 Created a folder for the frontend project'));
                     handler.frontEndInstall(answers['frontend']);
                 });
-
-                // This Part is still just idea and not implemented yet
-
-                // else if (answers['backend'] === 'AdonisJS') {
-                //     console.log("YOU ARE USING AdonisJS");
-                // } else if (answers['backend'] === 'Fastify') {
-                //     console.log("YOU ARE USING Fastify");
-                // } else if (answers['backend'] === 'Django') {
-                //     console.log("YOU ARE USING Django");
-                // } else if (answers['backend'] === 'Laravel') {
-                //     console.log("YOU ARE USING Laravel");
-                // } else if (answers['backend'] === 'Spring Boot') {
-                //     console.log("YOU ARE USING Spring Boot");
-                // } else if (answers['backend'] === 'Dotnet Core') {
-                //     console.log("YOU ARE USING Dotnet Core");
-                // inquirer.prompt(qs.questionsDB).then((answers) => {
-                //     if (answers['database'] === 'MongoDB') {
-                //         console.log("Sorry MongoDB is not supported yet");
-                //     } else if (answers['database'] === 'PostgreSQL') {
-                //         console.log("Sorry PostgreSQL is not supported yet");
-                //     } else if (answers['database'] === 'SQLite') {
-                //         console.log("YOU ARE USING SQLite");
-                //     }
-                // inquirer.prompt(qs.questionsPM).then((answers) => {
-                //     if (answers['package manager'] === 'npm') {
-                //         console.log("YOU ARE USING npm");
-                //     } else if (answers['package manager'] === 'yarn') {
-                //         console.log("Sorry yarn is not supported yet");
-                //     }
-                // });
-                // });
             });
 
         }
