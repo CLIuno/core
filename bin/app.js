@@ -3,12 +3,10 @@
 
 import inquirer from 'inquirer';
 import shell from 'shelljs';
-const path = process.cwd();
 import chalk from 'chalk';
 import * as qs from '../utils/questions.js';
-import { links } from '../utils/links.js';
 import * as handler from '../utils/GitHandler.js';
-
+import * as messages from '../utils/messages.js';
 
 console.log(chalk.green("Hello 👋, I'm a AIO CLI for creating a new project and make your pain less 🚀"));
 inquirer
@@ -18,16 +16,10 @@ inquirer
             console.log(chalk.yellow("🚧 Only TallStack is available for MVC with SQLite 🚧"));
             inquirer.prompt(qs.questionsMVC).then((answers) => {
                 if (answers['MVC'] === 'TallStack') {
-                    shell.exec(`mkdir ${answers['MVC']}`);
-                    console.log(chalk.green('📁 Created a folder for the project'));
-                    shell.exec(`git clone ${links.get('TallStack')} ${answers['MVC']}`);
-                    shell.cd(`${path}/${answers['MVC']}`);
-                    console.log(chalk.green('🚀 Installing dependencies'));
+                    handler.mkdirAndClone(answers['MVC']);
                     shell.exec(`composer install`);
                     shell.exec(`npm i`);
-                    console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
-                    console.log(chalk.green('\nMade with ❤️  by @ru44'));
-                    console.log(chalk.bgGreen("Please donate to the project if you like it ❤️"));
+                    messages.goodBye();
                     shell.rm('-rf', '.git');
                     shell.rm('-rf', '.github');
                     shell.cd(`..`);
@@ -53,18 +45,7 @@ inquirer
             console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
             inquirer.prompt(qs.questionsRestApiB).then((answers) => {
                 console.log(chalk.green('📁 Created a folder for the backend project'));
-                if (answers['backend'] === 'ExpressJs') {
-                    handler.backendInstall('ExpressJs');
-                } else if (answers['backend'] === 'Fastify') {
-                    handler.backendInstall('Fastify');
-                } else if (answers['backend'] === 'NestJs') {
-                    handler.backendInstall('NestJs');
-                } else if (answers['backend'] === 'AdonisJs') {
-                    handler.backendInstall('AdonisJs');
-                }
-                else {
-                    console.log(chalk.red('🚧 This feature is not available yet'));
-                }
+                handler.backendInstall(answers['backend']);
 
                 inquirer.prompt(qs.questionsRestApiF).then((answers) => {
                     console.log(chalk.green('📁 Created a folder for the frontend project'));
