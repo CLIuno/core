@@ -1,34 +1,35 @@
 import shell from 'shelljs';
 const path = process.cwd();
 import chalk from 'chalk';
+import * as messages from '../utils/messages.js';
 import { links } from '../utils/links.js';
 
-
-export function backendInstall(fmName) {
+export function mkdirAndClone(fmName) {
     shell.exec(`mkdir ${fmName}`);
-    console.log(chalk.green('cloning the backend project from GitHub 🚀'));
+    console.log(chalk.green(`cloning ${fmName} from The Repo 🚀`));
     shell.exec(`git clone ${links.get(fmName)} ${fmName}`);
     shell.cd(`${path}/${fmName}`);
     console.log(chalk.green('🚀 Installing dependencies'));
-    shell.exec(`npm i`);
-    console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
-    console.log(chalk.green('\nMade with ❤️  by @ru44'));
-    console.log(chalk.bgGreen("Please donate to the project if you like it ❤️"));
-    shell.rm('-rf', '.git');
-    shell.rm('-rf', '.github');
-    shell.cd(`..`);
+}
+
+export function backendInstall(fmName) {
+    if (fmName === 'Fastify' || fmName === 'ExpressJs' || fmName === 'NestJs' || fmName === 'AdonisJs') {
+        mkdirAndClone(fmName);
+        shell.exec(`npm i`);
+        messages.goodBye();
+        shell.rm('-rf', '.git');
+        shell.rm('-rf', '.github');
+        shell.cd(`..`);
+    } else {
+        console.log(chalk.red('🚧 This feature is not available yet 🚧'));
+    }
+
 }
 
 export function frontEndInstall(fmName) {
-    shell.exec(`mkdir ${fmName}`);
-    console.log(chalk.green('cloning the frontend project from GitHub 🚀'));
-    shell.exec(`git clone ${links.get(fmName)} ${fmName}`);
-    shell.cd(`${path}/${fmName}`);
-    console.log(chalk.green('🚀 Installing dependencies'));
+    mkdirAndClone(fmName);
     shell.exec(`npm i`);
-    console.log(chalk.green('📦 Successfully installed all the required dependencies\nHappy hacking 🚀'));
-    console.log(chalk.green('\nMade with ❤️  by @ru44'));
-    console.log(chalk.bgGreen("Please donate to the project if you like it ❤️"));
+    messages.goodBye();
     shell.rm('-rf', '.git');
     shell.rm('-rf', '.github');
     shell.cd(`..`);
