@@ -29,7 +29,7 @@ const runCli = async () => {
                     }
                 });
             } else {
-                console.log(chalk.red('🚧 Laravel and Django and Spring Boot and Dotnet is not available for RESTful API 🚧'));
+                console.log(chalk.red('🚧 Django and Spring Boot and Dotnet is not available for RESTful API 🚧'));
                 console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
                 inquirer.prompt(qs.questionsRestApiB).then((answers) => {
                     console.log(chalk.green('📁 Created a folder for the backend project'));

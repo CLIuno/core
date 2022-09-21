@@ -27,7 +27,16 @@ export function backendInstall(fmName) {
         shell.rm('-rf', '.git');
         shell.rm('-rf', '.github');
         shell.cd(`..`);
-    } else {
+    } else if ( fmName === "Django" ) {
+        mkdirAndClone(fmName);
+        shell.exec(`pip install Django==4.1.1`);
+        messages.goodBye();
+        shell.rm('-rf', '.git');
+        shell.rm('-rf', '.github');
+        shell.cd(`..`);
+
+    }
+     else {
         console.log(chalk.red('🚧 This feature is not available yet 🚧'));
     }
 
