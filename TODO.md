@@ -3,7 +3,7 @@
 ## feature plans
 
 - [ ] Fix bugs in every framework
-- [ ] run Django, Laravel, Spring Boot, Dotnet Core.
+- [ ] run Django, Laravel ✔️, Spring Boot, Dotnet Core.
 - [ ] add ReactNative
 - [ ] add Flutter
 - [ ] fix env for every framework

@@ -20,6 +20,13 @@ export function backendInstall(fmName) {
         shell.rm('-rf', '.git');
         shell.rm('-rf', '.github');
         shell.cd(`..`);
+    } else if (fmName === 'Laravel') {
+        mkdirAndClone(fmName);
+        shell.exec(`composer install`);
+        messages.goodBye();
+        shell.rm('-rf', '.git');
+        shell.rm('-rf', '.github');
+        shell.cd(`..`);
     } else {
         console.log(chalk.red('🚧 This feature is not available yet 🚧'));
     }

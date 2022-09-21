@@ -27,17 +27,6 @@ const runCli = async () => {
                     } else {
                         console.log(chalk.red('🚧 This feature is not available yet 🚧'));
                     }
-
-                    // This Part is still just idea and not implemented yet
-
-                    // console.log(chalk.red('🚧 This Projects is still under development'));
-                    //     inquirer.prompt(qs.questionsDB).then((answers) => {
-                    //         if (answers['database'] === 'MongoDB') {
-                    //             console.log("Sorry MongoDB is not supported yet");
-                    //         } else if (answers['database'] === 'PostgreSQL') {
-                    //             console.log("Sorry PostgreSQL is not supported yet");
-                    //         }
-                    //     });
                 });
             } else {
                 console.log(chalk.red('🚧 Laravel and Django and Spring Boot and Dotnet is not available for RESTful API 🚧'));
@@ -50,12 +39,11 @@ const runCli = async () => {
                         handler.frontEndInstall(answers['frontend']);
                     });
                 });
-
             }
         })
         .catch((error) => {
             if (error.isTtyError) {
-                console.log("Prompt couldn't be rendered in the current environment");
+                console.log(chalk.bgRed("Prompt couldn't be rendered in the current environment"));
             } else {
                 console.log("Something else went wrong");
             }
