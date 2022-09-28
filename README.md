@@ -1,5 +1,15 @@
 # All-In-One-CLI
+
 simple CLI for all in one project
+
+## Description
+
+This is a simple CLI for all in one project(I need someone's help to make it better xD)
+
+## Prerequisites
+
+- Node.js 16x and above
+- Docker 19x and above
 
 ## Installation
 
