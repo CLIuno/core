@@ -7,7 +7,7 @@
 - [ ] <del>add ReactNative</del>
 - [x] add Flutter
 - [ ] fix env for every framework
-- [ ] Clean up this file
+- [x] Clean up this file
 - [ ] Add comments
 - [ ] Add more error handling
 - [ ] Add more frameworks
