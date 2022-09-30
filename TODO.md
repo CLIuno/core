@@ -4,8 +4,8 @@
 
 - [ ] Fix bugs in every framework
 - [ ] run Django ✔️, Laravel ✔️, Spring Boot, Dotnet Core.
-- [ ] add ReactNative
-- [ ] add Flutter
+- [ ] <del>add ReactNative</del>
+- [x] add Flutter
 - [ ] fix env for every framework
 - [ ] Clean up this file
 - [ ] Add comments
