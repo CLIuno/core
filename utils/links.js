@@ -14,6 +14,7 @@ let links = new Map([
     ['TallStack', 'https://github.com/ru44/tallStack.git'],
     ['DotNet', 'https://dotnet.microsoft.com/'],
     ['Spring Boot', 'https://spring.io/'],
+    ['Flutter', 'https://github.com/ru44/Flutteraio.git'],
 ]);
 
 const _links = links;

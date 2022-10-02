@@ -2,9 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.1] - 2022-09-19
+## [1.4.1] - 2022-10-02
 
 ### Added
+
+- add Flutter Support
+- add Django Support
+- add Laravel Support
+
+## [1.1.1] - 2022-09-19
 
 ### frontend
 

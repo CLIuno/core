@@ -1,6 +1,6 @@
 {
   "name": "all-in-1-cli",
-  "version": "1.1.1",
+  "version": "1.4.1",
   "description": "All in one is a CLI to make your journey in web development less painful (it makes your life way easier).",
   "main": "./bin/app.js",
   "bin": {
