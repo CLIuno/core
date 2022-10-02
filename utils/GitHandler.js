@@ -12,29 +12,26 @@ export function mkdirAndClone(fmName) {
     console.log(chalk.green('🚀 Installing dependencies'));
 }
 
+export function cleaner() {
+    shell.exec(`npm i`);
+    shell.rm('-rf', '.git');
+    shell.rm('-rf', '.github');
+    shell.cd(`..`);
+}
+
 export function backendInstaller(fmName) {
     if (fmName === 'Fastify' || fmName === 'ExpressJs' || fmName === 'NestJs' || fmName === 'AdonisJs') {
         mkdirAndClone(fmName);
-        shell.exec(`npm i`);
-        messages.goodBye();
-        shell.rm('-rf', '.git');
-        shell.rm('-rf', '.github');
-        shell.cd(`..`);
+        cleaner();
     } else if (fmName === 'Laravel') {
         mkdirAndClone(fmName);
         shell.exec(`composer install`);
-        messages.goodBye();
-        shell.rm('-rf', '.git');
-        shell.rm('-rf', '.github');
-        shell.cd(`..`);
+        cleaner();
+
     } else if ( fmName === "Django" ) {
         mkdirAndClone(fmName);
-        shell.exec(`pip install Django==4.1.1`);
-        messages.goodBye();
-        shell.rm('-rf', '.git');
-        shell.rm('-rf', '.github');
-        shell.cd(`..`);
-
+        shell.exec(`pip install -r requirements.txt`);
+        cleaner()
     }
      else {
         console.log(chalk.red('🚧 This feature is not available yet 🚧'));
@@ -46,15 +43,11 @@ export function frontEndInstaller(fmName) {
     mkdirAndClone(fmName);
     shell.exec(`npm i`);
     messages.goodBye();
-    shell.rm('-rf', '.git');
-    shell.rm('-rf', '.github');
-    shell.cd(`..`);
+    cleaner();
 }
 
 export function mobileInstaller(fmName) {
     mkdirAndClone(fmName);
     messages.goodBye();
-    shell.rm('-rf', '.git');
-    shell.rm('-rf', '.github');
-    shell.cd(`..`);
+    cleaner()
 }
