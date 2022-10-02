@@ -33,10 +33,22 @@ const runCli = async () => {
                 console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
                 inquirer.prompt(qs.questionsRestApiB).then((answers) => {
                     console.log(chalk.green('📁 Created a folder for the backend project'));
-                    handler.backendInstall(answers['backend']);
-                    inquirer.prompt(qs.questionsRestApiF).then((answers) => {
-                        console.log(chalk.green('📁 Created a folder for the frontend project'));
-                        handler.frontEndInstall(answers['frontend']);
+                    handler.backendInstaller(answers['backend']);
+                    inquirer.prompt(qs.questionsRestApiFrontend).then((answers) => {
+                        if (answers['typeOfFrontend'] === 'Website') {
+                            inquirer.prompt(qs.questionsRestApiW).then((answers) => {
+                                console.log(chalk.green('📁 Created a folder for mobile app project'));
+                                handler.mobileInstaller(answers['mobile']);
+                            });
+                        } else if (answers['typeOfFrontend'] === 'Mobile') {
+                            inquirer.prompt(qs.questionsRestApiW).then((answers) => {
+                                console.log(chalk.green('📁 Created a folder for the frontend project'));
+                                handler.frontEndInstaller(answers['frontend']);
+                            });
+                        } else {
+                            messages.goodBye();
+                        }
+
                     });
                 });
             }

@@ -23,12 +23,30 @@ const questionsMVC = [
     }
 ];
 
-const questionsRestApiF = [
+const questionsRestApiW = [
     {
         type: 'list',
         name: 'frontend',
         message: 'Choose the front framework which you want to use:',
         choices: ['VueJs', 'NuxtJs', 'ReactJs', 'NextJs', 'Angular', 'Svelte'],
+    },
+];
+
+const questionsRestApiM = [
+    {
+        type: 'list',
+        name: 'mobile',
+        message: '( Only Flutter is available for now ):',
+        choices: ['Flutter'],
+    },
+];
+
+const questionsRestApiFrontend = [
+    {
+        type: 'list',
+        name: 'typeOfFrontend',
+        message: 'is it mobile App or Website:',
+        choices: ['Mobile', 'Website','Without Frontend'],
     },
 ];
 
@@ -69,7 +87,11 @@ const _questionsDP = questionsDP;
 export { _questionsDP as questionsDP };
 const _questionsRun = questionsRun;
 export { _questionsRun as questionsRun };
-const _questionsRestApiF = questionsRestApiF;
-export { _questionsRestApiF as questionsRestApiF };
 const _questionsRestApiB = questionsRestApiB;
 export { _questionsRestApiB as questionsRestApiB };
+const _questionsRestApiM = questionsRestApiM;
+export { _questionsRestApiM as questionsRestApiM };
+const _questionsRestApiW = questionsRestApiW;
+export { _questionsRestApiW as questionsRestApiW };
+const _questionsRestApiFrontend = questionsRestApiFrontend;
+export { _questionsRestApiFrontend as questionsRestApiFrontend };

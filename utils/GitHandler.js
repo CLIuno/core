@@ -12,7 +12,7 @@ export function mkdirAndClone(fmName) {
     console.log(chalk.green('🚀 Installing dependencies'));
 }
 
-export function backendInstall(fmName) {
+export function backendInstaller(fmName) {
     if (fmName === 'Fastify' || fmName === 'ExpressJs' || fmName === 'NestJs' || fmName === 'AdonisJs') {
         mkdirAndClone(fmName);
         shell.exec(`npm i`);
@@ -42,7 +42,7 @@ export function backendInstall(fmName) {
 
 }
 
-export function frontEndInstall(fmName) {
+export function frontEndInstaller(fmName) {
     mkdirAndClone(fmName);
     shell.exec(`npm i`);
     messages.goodBye();
