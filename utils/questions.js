@@ -46,7 +46,7 @@ const questionsRestApiFrontend = [
         type: 'list',
         name: 'typeOfFrontend',
         message: 'is it mobile App or Website:',
-        choices: ['Mobile', 'Website','Without Frontend'],
+        choices: ['Website', 'Mobile', 'Without Frontend'],
     },
 ];
 

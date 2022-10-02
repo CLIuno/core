@@ -21,9 +21,7 @@ const runCli = async () => {
                         shell.exec(`composer install`);
                         shell.exec(`npm i`);
                         messages.goodBye();
-                        shell.rm('-rf', '.git');
-                        shell.rm('-rf', '.github');
-                        shell.cd(`..`);
+                        handler.cleaner();
                     } else {
                         console.log(chalk.red('🚧 This feature is not available yet 🚧'));
                     }
@@ -37,13 +35,13 @@ const runCli = async () => {
                     inquirer.prompt(qs.questionsRestApiFrontend).then((answers) => {
                         if (answers['typeOfFrontend'] === 'Website') {
                             inquirer.prompt(qs.questionsRestApiW).then((answers) => {
-                                console.log(chalk.green('📁 Created a folder for mobile app project'));
-                                handler.mobileInstaller(answers['mobile']);
-                            });
-                        } else if (answers['typeOfFrontend'] === 'Mobile') {
-                            inquirer.prompt(qs.questionsRestApiW).then((answers) => {
                                 console.log(chalk.green('📁 Created a folder for the frontend project'));
                                 handler.frontEndInstaller(answers['frontend']);
+                            });
+                        } else if (answers['typeOfFrontend'] === 'Mobile') {
+                            inquirer.prompt(qs.questionsRestApiM).then((answers) => {
+                                console.log(chalk.green('📁 Created a folder for mobile app project'));
+                                handler.mobileInstaller(answers['mobile']);
                             });
                         } else {
                             messages.goodBye();
