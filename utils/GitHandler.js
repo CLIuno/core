@@ -50,3 +50,11 @@ export function frontEndInstaller(fmName) {
     shell.rm('-rf', '.github');
     shell.cd(`..`);
 }
+
+export function mobileInstaller(fmName) {
+    mkdirAndClone(fmName);
+    messages.goodBye();
+    shell.rm('-rf', '.git');
+    shell.rm('-rf', '.github');
+    shell.cd(`..`);
+}
