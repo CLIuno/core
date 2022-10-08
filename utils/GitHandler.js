@@ -13,7 +13,6 @@ export function mkdirAndClone(fmName) {
 }
 
 export function cleaner() {
-    shell.exec(`npm i`);
     shell.rm('-rf', '.git');
     shell.rm('-rf', '.github');
     shell.cd(`..`);
@@ -22,19 +21,30 @@ export function cleaner() {
 export function backendInstaller(fmName) {
     if (fmName === 'Fastify' || fmName === 'ExpressJs' || fmName === 'NestJs' || fmName === 'AdonisJs') {
         mkdirAndClone(fmName);
+        shell.exec(`npm i`);
         cleaner();
     } else if (fmName === 'Laravel') {
         mkdirAndClone(fmName);
         shell.exec(`composer install`);
+        shell.exec(`npm i`);
         cleaner();
 
     } else if ( fmName === "Django" ) {
         mkdirAndClone(fmName);
+        shell.exec(`python -m venv venv`);
+        shell.exec(`source venv/bin/activate`);
         shell.exec(`pip install -r requirements.txt`);
+        shell.exec(`python manage.py migrate`);
         cleaner()
-    }
-     else {
-        console.log(chalk.red('🚧 This feature is not available yet 🚧'));
+    } else if ( fmName === "Spring Boot" ) {
+        mkdirAndClone(fmName);
+        shell.exec(`mvn clean install`);
+        cleaner()
+    } else if ( fmName === "DotNet" ) {
+        mkdirAndClone(fmName);
+        cleaner()
+    } else {
+        console.log(chalk.yellow("You look like you have a backend framework installed already"));
     }
 
 }

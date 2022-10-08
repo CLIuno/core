@@ -17,7 +17,7 @@ I wish if you don't have to install these Prerequisites, but you should get them
 
 if you are going to work with Laravel, you should have composer installed.
 if you are going to work with Django, you should have python installed.
-if you are going to work with Spring Boot, you should have java installed.
+if you are going to work with Spring Boot, you should have java and mvn installed.
 if you are going to work with Dotnet Core, you should have dotnet installed.
 if you are going to work with Flutter, you should have flutter installed.
 All of these are optional, but you should have them if you want to work with the frameworks.
