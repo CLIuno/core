@@ -9,9 +9,8 @@ import * as handler from '../utils/GitHandler.js';
 import * as messages from '../utils/messages.js';
 
 const runCli = async () => {
-    console.log(chalk.green("Hello 👋, I'm a AIO CLI for creating a new project and make your pain less 🚀"));
-    inquirer
-        .prompt(qs.questionsDP)
+    console.log(chalk.green("Welcome to Aio the Ultimate CLI for making fullstack apps\nand making your life easier and less pain 🚀"));
+    inquirer.prompt(qs.questionsDP)
         .then((answers) => {
             if (answers['Design Pattern'] === 'MVC') {
                 console.log(chalk.yellow("🚧 Only TallStack is available for MVC with Postgres 🚧"));
