@@ -14,7 +14,7 @@ const runCli = async () => {
         .prompt(qs.questionsDP)
         .then((answers) => {
             if (answers['Design Pattern'] === 'MVC') {
-                console.log(chalk.yellow("🚧 Only TallStack is available for MVC with SQLite 🚧"));
+                console.log(chalk.yellow("🚧 Only TallStack is available for MVC with Postgres 🚧"));
                 inquirer.prompt(qs.questionsMVC).then((answers) => {
                     if (answers['MVC'] === 'TallStack') {
                         handler.mkdirAndClone(answers['MVC']);
@@ -27,8 +27,7 @@ const runCli = async () => {
                     }
                 });
             } else {
-                console.log(chalk.red('🚧 Django and Spring Boot and Dotnet is not available for RESTful API 🚧'));
-                console.log(chalk.yellow("🚧 Only SQLite is supported for now 🚧"));
+                console.log(chalk.yellow("🚧 Only Postgres is supported for now 🚧"));
                 inquirer.prompt(qs.questionsRestApiB).then((answers) => {
                     console.log(chalk.green('📁 Created a folder for the backend project'));
                     handler.backendInstaller(answers['backend']);
@@ -44,7 +43,7 @@ const runCli = async () => {
                                 handler.mobileInstaller(answers['mobile']);
                             });
                         } else {
-                            messages.goodBye();
+                            messages.withoutDepend();
                         }
 
                     });

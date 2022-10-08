@@ -55,7 +55,7 @@ const questionsRestApiB = [
         type: 'list',
         name: 'backend',
         message: 'Choose the backend framework which you want to use:',
-        choices: ['ExpressJs', 'NestJs', 'AdonisJs', 'Fastify', 'Django', 'Laravel', 'Spring Boot', 'DotNet',],
+        choices: ['ExpressJs', 'NestJs', 'AdonisJs', 'Fastify', 'Django', 'Laravel', 'Spring Boot', 'ASP.NET', 'Without Backend'],
     }
 ];
 

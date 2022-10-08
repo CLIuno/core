@@ -12,7 +12,7 @@ let links = new Map([
     ['Django', 'https://github.com/ru44/backendDjango.git'],
     ['AdonisJs', 'https://github.com/ru44/backendAdonis.git'],
     ['TallStack', 'https://github.com/ru44/tallStack.git'],
-    ['DotNet', 'https://dotnet.microsoft.com/'],
+    ['ASP.NET', 'https://github.com/ru44/BackendASP.NET'],
     ['Spring Boot', 'https://github.com/ru44/backendSpring.git'],
     ['Flutter', 'https://github.com/ru44/Flutteraio.git'],
 ]);

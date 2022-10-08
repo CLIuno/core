@@ -40,7 +40,7 @@ export function backendInstaller(fmName) {
         mkdirAndClone(fmName);
         shell.exec(`mvn clean install`);
         cleaner()
-    } else if ( fmName === "DotNet" ) {
+    } else if (fmName === "ASP.NET" ) {
         mkdirAndClone(fmName);
         cleaner()
     } else {
