@@ -13,7 +13,7 @@ let links = new Map([
     ['AdonisJs', 'https://github.com/ru44/backendAdonis.git'],
     ['TallStack', 'https://github.com/ru44/tallStack.git'],
     ['DotNet', 'https://dotnet.microsoft.com/'],
-    ['Spring Boot', 'https://spring.io/'],
+    ['Spring Boot', 'https://github.com/ru44/backendSpring.git'],
     ['Flutter', 'https://github.com/ru44/Flutteraio.git'],
 ]);
 
