@@ -30,8 +30,5 @@
     "chalk": "^5.0.1",
     "inquirer": "^9.1.1",
     "shelljs": "^0.8.5"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
   }
 }
