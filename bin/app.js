@@ -8,6 +8,7 @@ import * as qs from '../utils/questions.js';
 import * as handler from '../utils/GitHandler.js';
 import * as messages from '../utils/messages.js';
 
+
 const runCli = async () => {
     console.log(chalk.green("Welcome to Aio the Ultimate CLI for making fullstack apps\nand making your life easier and less pain 🚀"));
     inquirer.prompt(qs.questionsDP)
