@@ -39,3 +39,17 @@ $ yarn global add all-in-1-cli
 # run it
 $ all-in-1-cli
 ```
+
+	
+## Project status
+✅ Production ready and maintained.
+
+
+## Credits
+Thanks to [Rawan](https://github.com/Rawanne) for advice and guidance while building this package.
+Thanks to everyone who stars the project.
+
+	
+## Contributors
+
+Thanks goes to these wonderful people (Me) ✨ 
