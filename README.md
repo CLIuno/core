@@ -33,6 +33,12 @@ or by Using Yarn
 $ yarn global add all-in-1-cli
 ```
 
+or by Using PNPM
+
+```bash
+$ pnpm add -g all-in-1-cli
+```
+
 ## Running the app
 
 ```bash
