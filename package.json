@@ -1,38 +1,56 @@
 {
-  "name": "all-in-1-cli",
-  "version": "1.8.5",
-  "description": "All in one is a CLI to make your journey in web development less painful (it makes your life way easier).",
-  "main": "./bin/app.js",
-  "bin": {
-    "all-in-1-cli": "./bin/app.js"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install",
-    "lint": "eslint . --ext .js",
-    "lintfix": "eslint --fix --ext \".ts,.js,.vue\" --ignore-path .eslintignore .",
-    "dev": "node ./bin/app.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ru44/All-In-One-Cli.git"
-  },
-  "keywords": [
-    "cli",
-    "nodeJs",
-    "javascript",
-    "automation"
-  ],
-  "author": "RuM",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ru44/All-In-One-Cli/issues"
-  },
-  "type": "module",
-  "homepage": "https://github.com/ru44/All-In-One-Cli#readme",
-  "dependencies": {
-    "chalk": "^5.3.0",
-    "inquirer": "^9.2.8",
-    "shelljs": "^0.8.5"
-  }
+    "name": "all-in-1-cli",
+    "version": "1.8.5",
+    "description": "All in one is a CLI to make your journey in web development less painful (it makes your life way easier).",
+    "main": "./bin/app.js",
+    "bin": {
+        "all-in-1-cli": "./bin/app.js"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "lint": "eslint . --ext .js",
+        "lintfix": "eslint --fix --ext \".ts,.js\" --ignore-path .eslintignore .",
+        "dev": "node ./bin/app.js",
+        "prepare": "husky install"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ru44/All-In-One-Cli.git"
+    },
+    "keywords": [
+        "cli",
+        "nodeJs",
+        "javascript",
+        "automation",
+        "all-in-one",
+        "all-in-1",
+        "all in one"
+    ],
+    "author": "RuM",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/CLIuno/core/issues"
+    },
+    "type": "module",
+    "homepage": "https://github.com/CLIuno/core#readme",
+    "dependencies": {
+        "chalk": "^5.3.0",
+        "inquirer": "^9.2.8",
+        "shelljs": "^0.8.5"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^17.6.7",
+        "@commitlint/config-conventional": "^17.6.7",
+        "eslint": "^8.46.0",
+        "eslint-config-prettier": "^8.9.0",
+        "eslint-plugin-prettier": "^5.0.0",
+        "husky": "^8.0.0",
+        "lint-staged": "^13.2.3",
+        "prettier": "3.0.0"
+    },
+    "lint-staged": {
+        "**/*.{js,ts}": [
+            "pnpm lintfix"
+        ]
+    }
 }

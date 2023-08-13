@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "env": {
+    "browser": false,
+    "node": true
+  },
+  "extends": [
+    "plugin:prettier/recommended"
+  ],
+  "plugins": [],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
+  }
+}
