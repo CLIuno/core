@@ -2,20 +2,21 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+The following versions of Cloud Clip are currently supported with security updates:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 2.x     | :white_check_mark: |
+| 1.x     | :x:                |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+To report a vulnerability in Cloud Clip, please follow these steps:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+1. make issue with label `security` in this repository
+2. Include as much information as possible to help us understand and reproduce the issue.
+3. You can expect an initial response within 48 hours of your report.
+4. We will keep you updated on the status of your report and any actions taken.
+5. If the vulnerability is accepted, we will work on a fix and release it as soon as possible. If declined, we will provide a detailed explanation.
+
+Thank you for helping us keep cclip secure.

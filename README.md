@@ -1,10 +1,10 @@
-# All In One CLI (Aio)
+# CLIUNO
 
-The Ultimate CLI for all your needs in web development.
+The Ultimate Tool for all your needs in web development.
 
 ## Description
 
-This is a CLI that has all the commands you need to do anything you want. It has commands for everything from installing packages to creating a new project.
+This Tool has all the commands you need to do everything from installing packages to creating a new project.
 boosting your productivity, and making your life easier. I tried to make it as easy to use as possible, and I hope you enjoy it.
 
 ## Prerequisites
@@ -25,37 +25,32 @@ All of these are optional, but you should have them if you want to work with the
 ## Installation
 
 ```bash
-$ npm install -g all-in-1-cli
+npm install -g cliuno
 ```
+
 or by Using Yarn
 
 ```bash
-$ yarn global add all-in-1-cli
+yarn global add cliuno
 ```
 
 or by Using PNPM
 
 ```bash
-$ pnpm add -g all-in-1-cli
+pnpm add -g cliuno
 ```
 
 ## Running the app
 
 ```bash
 # run it
-$ all-in-1-cli
+$ cliuno
 ```
 
-	
-## Project status
+### Project status
+
 ✅ Production ready and maintained.
 
-
-## Credits
-Thanks to [Rawan](https://github.com/Rawanne) for advice and guidance while building this package.
-Thanks to everyone who stars the project.
-
-	
 ## Contributors
 
-Thanks goes to these wonderful people (Me) ✨ 
+Thanks goes to these wonderful people (Me) ✨

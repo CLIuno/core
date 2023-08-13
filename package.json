@@ -1,38 +1,73 @@
 {
-  "name": "all-in-1-cli",
-  "version": "1.8.4",
-  "description": "All in one is a CLI to make your journey in web development less painful (it makes your life way easier).",
-  "main": "./bin/app.js",
-  "bin": {
-    "all-in-1-cli": "./bin/app.js"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky install",
-    "lint": "eslint . --ext .js",
-    "lintfix": "eslint --fix --ext \".ts,.js,.vue\" --ignore-path .eslintignore .",
-    "dev": "node ./bin/app.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ru44/All-In-One-Cli.git"
-  },
-  "keywords": [
-    "cli",
-    "nodeJs",
-    "javascript",
-    "automation"
-  ],
-  "author": "RuM",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/ru44/All-In-One-Cli/issues"
-  },
-  "type": "module",
-  "homepage": "https://github.com/ru44/All-In-One-Cli#readme",
-  "dependencies": {
-    "chalk": "^5.3.0",
-    "inquirer": "^9.2.8",
-    "shelljs": "^0.8.5"
-  }
+    "name": "cliuno",
+    "version": "2.0.0",
+    "description": "CLIuno is a CLI tool to make your journey in web development less painful (it makes your life way easier).",
+    "author": "ru44",
+    "license": "MIT",
+    "main": "dist/app.js",
+    "module": "dist/app.js",
+    "types": "dist/app.d.ts",
+    "type": "module",
+    "bin": {
+        "cliuno": "dist/app.js"
+    },
+    "scripts": {
+        "lint": "eslint",
+        "lintfix": "eslint --fix",
+        "dev": "tsx ./src/app.ts",
+        "build": "tsup",
+        "release": "pnpm build && changeset publish",
+        "prepare": "husky"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/CLIuno/core.git"
+    },
+    "keywords": [
+        "cliuno",
+        "cli",
+        "nodeJs",
+        "typescript",
+        "javascript",
+        "automation",
+        "all-in-one",
+        "all-in-1",
+        "all in one"
+    ],
+    "bugs": {
+        "url": "https://github.com/CLIuno/core/issues"
+    },
+    "homepage": "https://github.com/CLIuno/core#readme",
+    "dependencies": {
+        "chalk": "^5.3.0",
+        "inquirer": "^9.3.7",
+        "shelljs": "^0.8.5"
+    },
+    "devDependencies": {
+        "@changesets/cli": "^2.27.10",
+        "@commitlint/cli": "^19.6.0",
+        "@commitlint/config-conventional": "^19.6.0",
+        "@eslint/js": "^9.16.0",
+        "@types/inquirer": "^9.0.7",
+        "@types/node": "^22.10.1",
+        "@types/shelljs": "^0.8.15",
+        "@typescript-eslint/eslint-plugin": "^8.16.0",
+        "@typescript-eslint/parser": "^8.16.0",
+        "eslint": "^9.16.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "globals": "^15.12.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^15.2.10",
+        "prettier": "^3.4.1",
+        "tsup": "^8.3.5",
+        "tsx": "^4.19.2",
+        "typescript": "^5.7.2",
+        "typescript-eslint": "^8.16.0"
+    },
+    "lint-staged": {
+        "**/*.{js,ts}": [
+            "pnpm lintfix"
+        ]
+    }
 }
