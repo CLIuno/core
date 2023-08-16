@@ -1,19 +1,22 @@
 {
-  "root": true,
-  "env": {
-    "browser": false,
-    "node": true
-  },
-  "extends": [
-    "plugin:prettier/recommended"
-  ],
-  "plugins": [],
-  "rules": {
-    "prettier/prettier": [
-      "error",
-      {
-        "endOfLine": "auto"
-      }
-    ]
-  }
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "root": true,
+    "env": {
+        "browser": false,
+        "node": true,
+        "es6": true
+    },
+    "extends": ["plugin:prettier/recommended"],
+    "plugins": [],
+    "rules": {
+        "prettier/prettier": [
+            "error",
+            {
+                "endOfLine": "auto"
+            }
+        ]
+    }
 }
