@@ -30,7 +30,7 @@ export function backendInstaller(fmName) {
         cleaner();
     } else if (fmName === 'Django') {
         mkdirAndClone(fmName);
-        shell.exec(`pip3 install Poetry`)
+        shell.exec(`pip3 install Poetry`);
         shell.exec(`cd ${path}/${fmName}_project && Poetry init && Poetry add Django`);
         cleaner();
     } else if (fmName === 'Spring Boot') {
