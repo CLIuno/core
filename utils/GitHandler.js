@@ -6,10 +6,9 @@ import * as messages from '../utils/messages.js';
 import { links } from './links.js';
 
 export function mkdirAndClone(fmName) {
-    shell.exec(`mkdir ${fmName}`);
     console.log(chalk.green(`cloning ${fmName} from The Repo 🚀`));
-    shell.exec(`git clone ${links.get(fmName)} ${fmName}`);
-    shell.cd(`${path}/${fmName}`);
+    shell.exec(`git clone ${links.get(fmName)} ${fmName}_project`);
+    shell.cd(`${path}/${fmName}_project`);
     console.log(chalk.green('🚀 Installing dependencies'));
 }
 
@@ -31,10 +30,8 @@ export function backendInstaller(fmName) {
         cleaner();
     } else if (fmName === 'Django') {
         mkdirAndClone(fmName);
-        shell.exec(`python -m venv venv`);
-        shell.exec(`source venv/bin/activate`);
-        shell.exec(`pip install -r requirements.txt`);
-        shell.exec(`python manage.py migrate`);
+        shell.exec(`pip3 install Poetry`);
+        shell.exec(`cd ${path}/${fmName}_project && Poetry init && Poetry add Django`);
         cleaner();
     } else if (fmName === 'Spring Boot') {
         mkdirAndClone(fmName);
