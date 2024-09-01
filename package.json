@@ -1,21 +1,24 @@
 {
     "name": "all-in-1-cli",
-    "version": "1.8.5",
-    "description": "All in one is a CLI to make your journey in web development less painful (it makes your life way easier).",
-    "main": "./bin/app.js",
+    "version": "1.9.6",
+    "description": "CLIuno is a CLI tool to make your journey in web development less painful (it makes your life way easier).",
+    "main": "app.ts",
+    "type": "module",
     "bin": {
-        "all-in-1-cli": "./bin/app.js"
+        "all-in-1-cli": "./bin/app.ts"
     },
     "scripts": {
         "test": "jest",
-        "lint": "eslint . --ext .js",
+        "lint": "eslint . --ext .ts",
         "lintfix": "eslint --fix --ext \".ts,.js\" --ignore-path .eslintignore .",
-        "dev": "node ./bin/app.js",
+        "dev": "tsx ./bin/app.ts",
+        "build": "tsc -p .",
+        "publish": "pnpm publish",
         "prepare": "husky install"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/ru44/All-In-One-Cli.git"
+        "url": "git+https://github.com/CLIuno/core.git"
     },
     "keywords": [
         "cli",
@@ -31,7 +34,6 @@
     "bugs": {
         "url": "https://github.com/CLIuno/core/issues"
     },
-    "type": "module",
     "homepage": "https://github.com/CLIuno/core#readme",
     "dependencies": {
         "chalk": "^5.3.0",
@@ -41,13 +43,19 @@
     "devDependencies": {
         "@commitlint/cli": "^17.6.7",
         "@commitlint/config-conventional": "^17.6.7",
+        "@types/inquirer": "^9.0.7",
+        "@types/jest": "^29.5.12",
+        "@types/shelljs": "^0.8.15",
+        "@typescript-eslint/eslint-plugin": "^8.3.0",
+        "@typescript-eslint/parser": "^8.3.0",
         "eslint": "^8.46.0",
         "eslint-config-prettier": "^8.9.0",
         "eslint-plugin-prettier": "^5.0.0",
         "husky": "^8.0.0",
         "jest": "^29.6.2",
         "lint-staged": "^13.2.3",
-        "prettier": "3.0.0"
+        "prettier": "3.0.0",
+        "tsx": "^4.19.0"
     },
     "lint-staged": {
         "**/*.{js,ts}": [
