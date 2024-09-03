@@ -10,10 +10,9 @@ function runCommands(commands: string[]) {
 }
 
 export function mkdirAndClone(frameworkName: string) {
-    shell.exec(`mkdir ${frameworkName}`)
     console.log(chalk.green(`cloning ${frameworkName} from The Repo 🚀`))
-    shell.exec(`git clone ${links.get(frameworkName)} ${frameworkName}`)
-    shell.cd(`${PATH}/${frameworkName}`)
+    shell.exec(`git clone ${links.get(frameworkName)} ${frameworkName}_project`)
+    shell.cd(`${PATH}/${frameworkName}_project`)
     console.log(chalk.green('🚀 Installing dependencies'))
 }
 
@@ -29,12 +28,7 @@ const backendCommands: { [key: string]: string[] } = {
     NestJs: ['npm i'],
     AdonisJs: ['npm i'],
     Laravel: ['composer install', 'npm i'],
-    Django: [
-        'python -m venv venv',
-        'source venv/bin/activate',
-        'pip install -r requirements.txt',
-        'python manage.py migrate'
-    ],
+    Django: ['pip3 install Poetry', `cd ${PATH}/Django_project && Poetry init && Poetry add Django`],
     'Spring Boot': ['mvn clean install'],
     'ASP.NET': []
 }
