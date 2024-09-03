@@ -1,6 +1,6 @@
-let url = 'https://github.com/CLIuno/';
+const url = 'https://github.com/CLIuno/'
 
-let links = new Map([
+const links = new Map([
     ['VueJs', `${url}CLIuno-Vue-template.git`],
     ['NuxtJs', `${url}CLIuno-Nuxt-template.git`],
     ['ReactJs', `${url}CLIuno-React-template.git`],
@@ -16,7 +16,7 @@ let links = new Map([
     ['TallStack', `${url}CLIuno-TallStack-template.git`],
     ['ASP.NET', `${url}CLIuno-ASP.NET-template.git`],
     ['Spring Boot', `${url}CLIuno-Spring-template.git`],
-    ['Flutter', `${url}CLIuno-Flutter-template.git`],
-]);
+    ['Flutter', `${url}CLIuno-Flutter-template.git`]
+])
 
-export { links };
+export { links }

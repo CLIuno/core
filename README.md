@@ -25,18 +25,19 @@ All of these are optional, but you should have them if you want to work with the
 ## Installation
 
 ```bash
-$ npm install -g all-in-1-cli
+npm install -g all-in-1-cli
 ```
+
 or by Using Yarn
 
 ```bash
-$ yarn global add all-in-1-cli
+yarn global add all-in-1-cli
 ```
 
 or by Using PNPM
 
 ```bash
-$ pnpm add -g all-in-1-cli
+pnpm add -g all-in-1-cli
 ```
 
 ## Running the app
@@ -46,16 +47,10 @@ $ pnpm add -g all-in-1-cli
 $ all-in-1-cli
 ```
 
-	
-## Project status
+### Project status
+
 ✅ Production ready and maintained.
 
-
-## Credits
-Thanks to [Rawan](https://github.com/Rawanne) for advice and guidance while building this package.
-Thanks to everyone who stars the project.
-
-	
 ## Contributors
 
-Thanks goes to these wonderful people (Me) ✨ 
+Thanks goes to these wonderful people (Me) ✨
