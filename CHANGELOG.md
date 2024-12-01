@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.0
+
+### Major Changes
+
+- e007a3c: breaking change - change the command from all-in-1-cli to cliuno
+
 All notable changes to this project will be documented in this file.
 
 ## [1.4.1] - 2022-10-02
