@@ -5,6 +5,17 @@ import { links } from './links'
 
 const PATH = process.cwd()
 
+const backendCommands: { [key: string]: string[] } = {
+    Fastify: ['npm i'],
+    ExpressJs: ['npm i'],
+    NestJs: ['npm i'],
+    AdonisJs: ['npm i'],
+    Laravel: ['composer install', 'npm i'],
+    Django: ['pip3 install Poetry', `cd ${PATH}/Django_project && Poetry init && Poetry add Django`],
+    'Spring Boot': ['mvn clean install'],
+    'ASP.NET': []
+}
+
 function runCommands(commands: string[]) {
     commands.forEach((command) => shell.exec(command))
 }
@@ -20,17 +31,6 @@ export function cleaner() {
     shell.rm('-rf', '.git')
     shell.rm('-rf', '.github')
     shell.cd(`..`)
-}
-
-const backendCommands: { [key: string]: string[] } = {
-    Fastify: ['npm i'],
-    ExpressJs: ['npm i'],
-    NestJs: ['npm i'],
-    AdonisJs: ['npm i'],
-    Laravel: ['composer install', 'npm i'],
-    Django: ['pip3 install Poetry', `cd ${PATH}/Django_project && Poetry init && Poetry add Django`],
-    'Spring Boot': ['mvn clean install'],
-    'ASP.NET': []
 }
 
 export function backendInstaller(frameworkName: string) {

@@ -4,17 +4,13 @@
 import chalk from 'chalk'
 import shell from 'shelljs'
 import inquirer from 'inquirer'
-import * as messages from '../utils/messages'
-import * as handler from '../utils/GitHandler'
-import { questions } from '../utils/questions'
+import * as messages from './utils/messages'
+import * as handler from './utils/GitHandler'
+import { questions } from './utils/questions'
 import { version } from '../package.json'
 ;(async () => {
-    console.log(chalk.blue('CLIuno 🐱‍👤'))
-    console.log(
-        chalk.green(
-            'Welcome to CLIuno, the Ultimate CLI for making full stack apps and making your life easier and less painful 🚀'
-        )
-    )
+    console.log(chalk.blue('CLIuno 🕹'))
+    console.log(chalk.green('Welcome to CLIuno, the Ultimate tool for making full web apps in less than min 🚀'))
     console.log('Current version:', chalk.yellow(version))
     const designPatternAnswer = await inquirer.prompt(questions.DesignPattern as any)
 
@@ -40,7 +36,7 @@ import { version } from '../package.json'
     }
 
     async function handleRestApi() {
-        console.log(chalk.yellow('🚧 Only Postgres is supported for now 🚧'))
+        console.log(chalk.yellow('🚧 Only SQLite is supported for now 🚧'))
         const backendAnswer = await inquirer.prompt(questions.RestApiBackend as any)
         console.log(chalk.green('📁 Created a folder for the backend project'))
         handler.backendInstaller(backendAnswer['backend'])

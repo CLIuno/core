@@ -1,0 +1,52 @@
+# Ignore node_modules
+node_modules
+
+# Ignore logs
+*.log
+
+# Ignore TypeScript source files
+src/**/*.ts
+
+# Ignore test files
+test
+tests
+*.spec.ts
+*.test.ts
+
+# Ignore configuration files
+*.config.js
+*.config.ts
+*.config.json
+
+# Ignore environment files
+.env
+.env.*
+
+# Ignore documentation
+docs
+*.md
+
+# Ignore IDE specific files
+.vscode
+.idea
+
+# Ignore miscellaneous files
+.DS_Store
+Thumbs.db
+tsconfig.json
+tsub.config.ts
+
+# Ignore husky
+.husky
+
+.github
+.changeset
+SECURITY.md
+BACKERS.md
+CHANGELOG.md
+TODO.md
+.prettierrc
+.prettierignore
+.editorconfig
+commitlint.config.mjs
+eslint.config.mjs
