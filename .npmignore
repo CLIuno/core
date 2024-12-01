@@ -39,6 +39,9 @@ tsub.config.ts
 # Ignore husky
 .husky
 
+# Ignore circleci
+.circleci
+
 .github
 .changeset
 SECURITY.md
@@ -50,3 +53,4 @@ TODO.md
 .editorconfig
 commitlint.config.mjs
 eslint.config.mjs
+.lintstagedrc.json
