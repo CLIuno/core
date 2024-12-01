@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1
+
+### Patch Changes
+
+- d2f218f: fix version bug
+
 ## 2.0.0
 
 ### Major Changes
