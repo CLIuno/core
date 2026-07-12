@@ -36,6 +36,7 @@
         "fmt": "oxfmt",
         "fmt:check": "oxfmt --check",
         "dev": "tsx ./src/app.ts",
+        "test:matrix": "node scripts/test-matrix.mjs",
         "build": "tsup",
         "release": "pnpm build && changeset publish",
         "prepare": "husky"
