@@ -18,6 +18,7 @@
  */
 
 import { spawn, execFileSync } from "node:child_process";
+import crypto from "node:crypto";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import net from "node:net";
 import path from "node:path";
@@ -120,6 +121,8 @@ const BACKENDS = [
     {
         id: "fastapi",
         dir: "CLIuno-FastAPI-template",
+        prepare: [["rm", ["-f", "matrix-test.db"]]],
+        env: { DATABASE_URL: "sqlite:///./matrix-test.db" },
         start: () => ({
             cmd: "uv",
             args: ["run", "uvicorn", "src.app:app", "--port", String(PORT)],
@@ -261,6 +264,33 @@ async function req(method, url, { token, body } = {}) {
     } finally {
         clearTimeout(t);
     }
+}
+
+// Minimal TOTP (RFC 6238, sha1/6 digits/30s) so the OTP endpoints get tested end-to-end.
+function base32Decode(str) {
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+    let bits = 0;
+    let value = 0;
+    const out = [];
+    for (const c of str.replace(/=+$/, "").toUpperCase()) {
+        const idx = alphabet.indexOf(c);
+        if (idx < 0) continue;
+        value = (value << 5) | idx;
+        bits += 5;
+        if (bits >= 8) {
+            out.push((value >>> (bits - 8)) & 0xff);
+            bits -= 8;
+        }
+    }
+    return Buffer.from(out);
+}
+
+function totp(secret, now = Date.now()) {
+    const counter = Buffer.alloc(8);
+    counter.writeBigUInt64BE(BigInt(Math.floor(now / 1000 / 30)));
+    const h = crypto.createHmac("sha1", base32Decode(secret)).update(counter).digest();
+    const offset = h[h.length - 1] & 0xf;
+    return String((h.readUInt32BE(offset) & 0x7fffffff) % 1_000_000).padStart(6, "0");
 }
 
 function pick(obj, paths) {
@@ -531,6 +561,55 @@ async function runFlow(backend, dir) {
             await req("DELETE", `${BASE}/follows/${ctx.userId2}/follow`, T),
             ok2xx,
         );
+    }
+
+    // -- auth feature endpoints (frontends: {email}, auth'd OTP with {otp})
+    record(
+        "POST /auth/forgot-password",
+        await req("POST", `${BASE}/auth/forgot-password`, { body: { email: u1.email } }),
+        ok2xx,
+    );
+    record(
+        "POST /auth/send-verify-email",
+        await req("POST", `${BASE}/auth/send-verify-email`, T),
+        ok2xx,
+    );
+    const gen = await req("POST", `${BASE}/auth/otp/generate`, T);
+    let secret = pick(gen.json ?? {}, ["data.secret", "data.otp_secret", "data.base32", "secret"]);
+    if (!secret) {
+        const uri = pick(gen.json ?? {}, [
+            "data.otpauth_url",
+            "data.provisioning_uri",
+            "data.url",
+            "data.uri",
+        ]);
+        const m = uri && String(uri.value).match(/[?&]secret=([A-Z2-7]+)/i);
+        if (m) secret = { path: "otpauth-uri", value: m[1] };
+    }
+    record(
+        "POST /auth/otp/generate",
+        gen,
+        (r) => ok2xx(r) && !!secret,
+        secret ? `secret@${secret.path}` : "no otp secret in response",
+    );
+    if (secret) {
+        record(
+            "POST /auth/otp/verify",
+            await req("POST", `${BASE}/auth/otp/verify`, {
+                ...T,
+                body: { otp: totp(secret.value) },
+            }),
+            ok2xx,
+        );
+        record(
+            "POST /auth/otp/validate",
+            await req("POST", `${BASE}/auth/otp/validate`, {
+                ...T,
+                body: { otp: totp(secret.value) },
+            }),
+            ok2xx,
+        );
+        record("POST /auth/otp/disable", await req("POST", `${BASE}/auth/otp/disable`, T), ok2xx);
     }
 
     // -- cleanup + logout
