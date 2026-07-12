@@ -62,6 +62,21 @@ const testEnvBase = {
     FRONTEND_URL: "http://127.0.0.1:5999",
 };
 
+// Read a stored one-time token (reset/verify) straight from the backend's database,
+// standing in for the email the user would normally receive.
+const sqliteRead = (dir, dbFile, table, col, email) =>
+    execFileSync(
+        "node",
+        [
+            "-e",
+            `const D=require('better-sqlite3');const r=new D('${dbFile}').prepare('SELECT ${col} AS t FROM ${table} WHERE email=?').get(process.argv[1]);process.stdout.write((r&&r.t)||'')`,
+            email,
+        ],
+        { cwd: dir },
+    )
+        .toString()
+        .trim();
+
 const BACKENDS = [
     {
         id: "express",
@@ -77,6 +92,14 @@ const BACKENDS = [
                     username,
                 ],
                 { cwd: dir },
+            ),
+        readToken: (dir, email, kind) =>
+            sqliteRead(
+                dir,
+                "db.sqlite",
+                "users",
+                kind === "reset" ? "reset_token" : "verify_token",
+                email,
             ),
     },
     {
@@ -94,6 +117,14 @@ const BACKENDS = [
                     username,
                 ],
                 { cwd: dir },
+            ),
+        readToken: (dir, email, kind) =>
+            sqliteRead(
+                dir,
+                "database.sqlite",
+                "Users",
+                kind === "reset" ? "reset_token" : "verify_token",
+                email,
             ),
     },
     {
@@ -117,6 +148,24 @@ const BACKENDS = [
                 ],
                 { cwd: dir },
             ),
+        readToken: (dir, email, kind) =>
+            execFileSync(
+                "uv",
+                [
+                    "run",
+                    "python",
+                    "manage.py",
+                    "shell",
+                    "-c",
+                    `from src.models import User; print(User.objects.get(email='${email}').${kind === "reset" ? "reset_token" : "verify_token"} or '')`,
+                ],
+                { cwd: dir },
+            )
+                .toString()
+                .trim()
+                .split("\n") // the shell prints an auto-import banner first
+                .pop()
+                .trim(),
     },
     {
         id: "fastapi",
@@ -127,6 +176,19 @@ const BACKENDS = [
             cmd: "uv",
             args: ["run", "uvicorn", "src.app:app", "--port", String(PORT)],
         }),
+        readToken: (dir, email, kind) =>
+            execFileSync(
+                "uv",
+                [
+                    "run",
+                    "python",
+                    "-c",
+                    `import sqlite3;r=sqlite3.connect('matrix-test.db').execute("select ${kind === "reset" ? "reset_token" : "verify_token"} from users where email=?",('${email}',)).fetchone();print((r and r[0]) or '', end='')`,
+                ],
+                { cwd: dir },
+            )
+                .toString()
+                .trim(),
     },
     {
         id: "laravel",
@@ -136,6 +198,19 @@ const BACKENDS = [
             cmd: "php",
             args: ["artisan", "serve", "--host=127.0.0.1", `--port=${PORT}`],
         }),
+        readToken: (dir, email, kind) =>
+            execFileSync(
+                "php",
+                [
+                    "artisan",
+                    "tinker",
+                    "--execute",
+                    `echo optional(App\\Models\\User::where('email','${email}')->first())->${kind === "reset" ? "reset_password_token" : "verify_token"};`,
+                ],
+                { cwd: dir },
+            )
+                .toString()
+                .trim(),
     },
     {
         id: "rails",
@@ -145,6 +220,17 @@ const BACKENDS = [
             cmd: "bin/rails",
             args: ["server", "-b", "127.0.0.1", "-p", String(PORT)],
         }),
+        readToken: (dir, email, kind) =>
+            execFileSync(
+                "bin/rails",
+                [
+                    "runner",
+                    `print User.find_by(email: '${email}')&.${kind === "reset" ? "reset_password_token" : "verify_token"}`,
+                ],
+                { cwd: dir },
+            )
+                .toString()
+                .trim(),
     },
 ];
 
@@ -369,11 +455,36 @@ async function runFlow(backend, dir) {
                 tok ? `token@${tok.path}` : "no token in response",
             );
             ctx.token = tok?.value;
+            ctx.refreshToken = pick(login.json ?? {}, [
+                "data.refreshToken",
+                "data.refresh_token",
+            ])?.value;
         } else {
             ctx.token2 = tok?.value;
         }
     }
     const T = { token: ctx.token };
+
+    // -- token management (frontends: Bearer + {token} / {refreshToken})
+    record(
+        "POST /auth/check-token",
+        await req("POST", `${BASE}/auth/check-token`, { ...T, body: { token: ctx.token } }),
+        ok2xx,
+    );
+    if (ctx.refreshToken) {
+        const rf = await req("POST", `${BASE}/auth/refresh-token`, {
+            body: { refreshToken: ctx.refreshToken },
+        });
+        const rotated = pick(rf.json ?? {}, ["data.token"]);
+        record(
+            "POST /auth/refresh-token",
+            rf,
+            (r) => ok2xx(r) && !!rotated,
+            rotated ? "token rotated" : "no token in response",
+        );
+        const nextRefresh = pick(rf.json ?? {}, ["data.refreshToken", "data.refresh_token"]);
+        if (nextRefresh) ctx.refreshToken = nextRefresh.value;
+    }
 
     // -- current user (both ids needed for follows)
     const me = await req("GET", `${BASE}/users/current`, T);
@@ -564,16 +675,65 @@ async function runFlow(backend, dir) {
     }
 
     // -- auth feature endpoints (frontends: {email}, auth'd OTP with {otp})
+    // Re-login and roll the working credentials after a password change.
+    const relogin = async () => {
+        const rl = await req("POST", `${BASE}/auth/login`, {
+            body: { usernameOrEmail: u1.username, password: u1.password },
+        });
+        const t = pick(rl.json ?? {}, ["data.token"]);
+        if (!t) return false;
+        ctx.token = t.value;
+        T.token = t.value;
+        const r2 = pick(rl.json ?? {}, ["data.refreshToken", "data.refresh_token"]);
+        if (r2) ctx.refreshToken = r2.value;
+        return true;
+    };
+    const readToken = (kind) => {
+        if (!backend.readToken) return "";
+        try {
+            return backend.readToken(dir, u1.email, kind) || "";
+        } catch (e) {
+            vlog(`readToken(${kind}) failed: ${String(e).slice(0, 100)}`);
+            return "";
+        }
+    };
+
     record(
         "POST /auth/forgot-password",
         await req("POST", `${BASE}/auth/forgot-password`, { body: { email: u1.email } }),
         ok2xx,
     );
+    const resetToken = readToken("reset");
+    if (resetToken) {
+        const rp = await req("POST", `${BASE}/auth/reset-password`, {
+            body: { password: "Matrix#Reset456", token: resetToken },
+        });
+        let rpOk = ok2xx(rp);
+        if (rpOk) {
+            u1.password = "Matrix#Reset456";
+            rpOk = await relogin();
+        }
+        record(
+            "POST /auth/reset-password",
+            rp,
+            () => rpOk,
+            rpOk ? "reset + re-login ok" : "reset or re-login failed",
+        );
+    }
+
     record(
         "POST /auth/send-verify-email",
         await req("POST", `${BASE}/auth/send-verify-email`, T),
         ok2xx,
     );
+    const verifyToken = readToken("verify");
+    if (verifyToken) {
+        record(
+            "POST /auth/verify-email",
+            await req("POST", `${BASE}/auth/verify-email`, { body: { token: verifyToken } }),
+            ok2xx,
+        );
+    }
     const gen = await req("POST", `${BASE}/auth/otp/generate`, T);
     let secret = pick(gen.json ?? {}, ["data.secret", "data.otp_secret", "data.base32", "secret"]);
     if (!secret) {
@@ -610,6 +770,33 @@ async function runFlow(backend, dir) {
             ok2xx,
         );
         record("POST /auth/otp/disable", await req("POST", `${BASE}/auth/otp/disable`, T), ok2xx);
+    }
+
+    // -- change password (frontends: Bearer + {oldPassword, newPassword})
+    const cp = await req("POST", `${BASE}/auth/change-password`, {
+        ...T,
+        body: { oldPassword: u1.password, newPassword: "Matrix#Change789" },
+    });
+    let cpOk = ok2xx(cp);
+    if (cpOk) {
+        u1.password = "Matrix#Change789";
+        cpOk = await relogin();
+    }
+    record(
+        "POST /auth/change-password",
+        cp,
+        () => cpOk,
+        cpOk ? "changed + re-login ok" : "change or re-login failed",
+    );
+
+    // -- admin-gated user delete (a valid contract is 2xx or 403 for non-admins)
+    if (ctx.userId2) {
+        record(
+            "DELETE /users/:p",
+            await req("DELETE", `${BASE}/users/${ctx.userId2}`, T),
+            (r) => ok2xx(r) || r.status === 403,
+            "2xx or admin-gated 403",
+        );
     }
 
     // -- cleanup + logout
