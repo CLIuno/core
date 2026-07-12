@@ -1,11 +1,11 @@
-import { defineConfig } from 'tsup'
+import { defineConfig } from "tsup";
 
 export default defineConfig({
-    format: ['cjs', 'esm'],
-    entry: ['./src/app.ts'],
+    format: ["esm"],
+    entry: ["./src/app.ts"],
     dts: true,
     shims: true,
     skipNodeModulesBundle: true,
     sourcemap: true,
-    clean: true
-})
+    clean: true,
+});

@@ -1,71 +1,83 @@
 export const questions = {
     DesignPattern: {
-        type: 'list',
-        name: 'Design Pattern',
-        message: 'Choose the Design Pattern you want to use:',
-        choices: ['MVC', 'RESTful API']
+        message: "Choose the Design Pattern you want to use:",
+        choices: [
+            { name: "MVC", value: "MVC" },
+            { name: "RESTful API", value: "RESTful API" },
+            { name: "Doctor 🩺", value: "Doctor 🩺" },
+        ],
     },
     Run: {
-        type: 'confirm',
-        name: 'RunProject',
-        message: 'Do you want to run the project?'
+        message: "Do you want to run the project?",
     },
     MVC: {
-        type: 'list',
-        name: 'MVC',
-        message: 'Choose the MVC framework which you want to use:',
-        choices: ['TallStack', 'DjangoMTV']
+        message: "Choose the MVC framework which you want to use:",
+        choices: [
+            { name: "TallStack", value: "TallStack" },
+            { name: "DjangoMTV", value: "DjangoMTV" },
+        ],
     },
 
     RestApiWebsite: {
-        type: 'list',
-        name: 'frontend',
-        message: 'Choose the front framework which you want to use:',
-        choices: ['VueJs', 'NuxtJs', 'ReactJs', 'NextJs', 'Angular', 'Svelte']
+        message: "Choose the front framework which you want to use:",
+        choices: [
+            { name: "VueJs", value: "VueJs" },
+            { name: "NuxtJs", value: "NuxtJs" },
+            { name: "ReactJs", value: "ReactJs" },
+            { name: "NextJs", value: "NextJs" },
+            { name: "Angular", value: "Angular" },
+            { name: "Svelte", value: "Svelte" },
+            { name: "SolidJs", value: "SolidJs" },
+        ],
     },
 
     RestApiMobile: {
-        type: 'list',
-        name: 'mobile',
-        message: '( Only Flutter is available for now ):',
-        choices: ['Flutter']
+        message: "( Only Flutter is available for now ):",
+        choices: [{ name: "Flutter", value: "Flutter" }],
     },
 
     RestApiFrontend: {
-        type: 'list',
-        name: 'typeOfFrontend',
-        message: 'is it a mobile App or Website:',
-        choices: ['Website', 'Mobile', 'Without Frontend']
+        message: "is it a mobile App or Website:",
+        choices: [
+            { name: "Website", value: "Website" },
+            { name: "Mobile", value: "Mobile" },
+            { name: "Without Frontend", value: "Without Frontend" },
+        ],
     },
 
     RestApiBackend: {
-        type: 'list',
-        name: 'backend',
-        message: 'Choose the backend framework which you want to use:',
+        message: "Choose the backend framework which you want to use:",
         choices: [
-            'ExpressJs',
-            'NestJs',
-            'AdonisJs',
-            'Fastify',
-            'Django',
-            'Laravel',
-            'Spring Boot',
-            'ASP.NET',
-            'Without Backend'
-        ]
+            { name: "ExpressJs", value: "ExpressJs" },
+            { name: "NestJs", value: "NestJs" },
+            { name: "AdonisJs", value: "AdonisJs" },
+            { name: "Fastify", value: "Fastify" },
+            { name: "Django", value: "Django" },
+            { name: "FastAPI", value: "FastAPI" },
+            { name: "Rails", value: "Rails" },
+            { name: "Laravel", value: "Laravel" },
+            { name: "Spring Boot", value: "Spring Boot" },
+            { name: "ASP.NET", value: "ASP.NET" },
+            { name: "Without Backend", value: "Without Backend" },
+        ],
     },
 
     PackageManager: {
-        type: 'list',
-        name: 'packageManager',
-        message: 'Choose the package manager which you are using:',
-        choices: ['npm', 'yarn']
+        message: "Choose the package manager which you are using:",
+        choices: [
+            { name: "npm", value: "npm" },
+            { name: "yarn", value: "yarn" },
+            { name: "pnpm", value: "pnpm" },
+            { name: "bun", value: "bun" },
+            { name: "deno", value: "deno" },
+        ],
     },
 
     Database: {
-        type: 'list',
-        name: 'database',
-        message: 'Choose the database which you want to use:',
-        choices: ['MongoDB', 'SQLite']
-    }
-}
+        message: "Choose the database which you want to use:",
+        choices: [
+            { name: "MongoDB", value: "MongoDB" },
+            { name: "SQLite", value: "SQLite" },
+        ],
+    },
+};
