@@ -1,0 +1,42 @@
+{
+    "skill_name": "cliuno-matrix",
+    "evals": [
+        {
+            "id": 0,
+            "name": "contract-qa",
+            "prompt": "You are working in the CLIuno workspace at /home/rum/github/cliuno. I'm building a small mobile client against the CLIuno backend templates and need three precise facts: (1) what exact JSON body do the web frontends send to POST /api/v1/auth/refresh-token, (2) which key(s) must the response include for the frontends to keep working, and (3) where do the backends store the one-time password-reset token on the server side? Answer all three precisely.",
+            "expected_output": "States the body is {refreshToken} (camelCase), the response must include data.token (refreshed refreshToken too), and reset tokens are stored on the user row (reset_token / reset_password_token columns), not in a separate blacklist or cache.",
+            "files": [],
+            "assertions": [
+                "Answer states the refresh-token request body key is refreshToken (camelCase), not refresh_token-only or a Bearer header",
+                "Answer states the response must include data.token (the access token under the data envelope)",
+                "Answer states one-time reset tokens are stored on the user record/row (reset_token, or reset_password_token for Rails/Laravel)"
+            ]
+        },
+        {
+            "id": 1,
+            "name": "debug-shape-failure",
+            "prompt": "I ran the CLIuno compatibility matrix in /home/rum/github/cliuno and one backend column shows: `FAIL POST /auth/login -> 200 no token in response`, even though logging in with curl returns HTTP 200 and looks fine. Explain exactly what is wrong and list the concrete things to check and fix in that backend.",
+            "expected_output": "Explains the matrix asserts response shapes, not just status codes: the frontends read data.token from the login response, so a 200 whose envelope lacks data.token fails. Points at the backend's login response envelope ({status, message, data:{token,...}}) as the thing to fix, referencing the shared contract.",
+            "files": [],
+            "assertions": [
+                "Identifies that the HTTP status was fine and the failure is about the response body shape (envelope), not the status code",
+                "States the frontends/matrix require the access token at data.token in the login response",
+                "Directs the fix at the backend's login response envelope (add token under data), not at the frontend or at auth credentials"
+            ]
+        },
+        {
+            "id": 2,
+            "name": "run-single-column",
+            "prompt": "In /home/rum/github/cliuno, run the CLIuno compatibility matrix for ONLY the fastapi backend against ONLY the react frontend. Then write a short report containing: the exact command you used, how many flow steps passed, and the react/fastapi cell result. Also copy the generated JSON report file next to your report.",
+            "expected_output": "Runs node scripts/test-matrix.mjs --backends fastapi --frontends react (from core/), reports flow 45/45 steps passed and the react cell as PASS, and copies core/matrix-report.json into the outputs.",
+            "files": [],
+            "assertions": [
+                "The report shows the matrix was invoked with both --backends fastapi and --frontends react (single column, not the full board)",
+                "The report states 45/45 flow steps passed (or N/N with all steps passing)",
+                "The report states the react x fastapi cell result is PASS",
+                "A copy of the generated matrix-report.json exists in the outputs directory"
+            ]
+        }
+    ]
+}

@@ -103,6 +103,41 @@ const BACKENDS = [
             ),
     },
     {
+        id: "fastify",
+        dir: "CLIuno-Fastify-template",
+        start: () => ({ cmd: "node_modules/.bin/tsx", args: ["src/app.ts"] }),
+        env: { PORT: String(PORT) },
+        readToken: (dir, email, kind) =>
+            sqliteRead(
+                dir,
+                "db.sqlite",
+                "Users",
+                kind === "reset" ? "reset_token" : "verify_token",
+                email,
+            ),
+    },
+    {
+        id: "adonis",
+        dir: "CLIuno-Adonis-template",
+        prepare: [["node", ["ace", "migration:run", "--force"]]],
+        start: () => ({ cmd: "node", args: ["ace", "serve"] }),
+        env: {
+            PORT: String(PORT),
+            HOST: "127.0.0.1",
+            LOG_LEVEL: "warn",
+            TZ: "UTC",
+            APP_KEY: "matrix-test-app-key-32-chars-min!",
+        },
+        readToken: (dir, email, kind) =>
+            sqliteRead(
+                dir,
+                "tmp/db.sqlite3",
+                "users",
+                kind === "reset" ? "reset_token" : "verify_token",
+                email,
+            ),
+    },
+    {
         id: "nest",
         dir: "CLIuno-Nest-template",
         prepare: [["node_modules/.bin/nest", ["build"]]],
@@ -213,6 +248,48 @@ const BACKENDS = [
                 .trim(),
     },
     {
+        id: "aspnet",
+        dir: "CLIuno-ASP.NET-template",
+        prepare: [["rm", ["-f", "BackendASP.NET/db.sqlite"]]],
+        start: () => ({
+            cmd: `${process.env.HOME}/.dotnet/dotnet`,
+            args: ["run", "--project", "BackendASP.NET"],
+        }),
+        env: { PORT: String(PORT) },
+        readToken: (dir, email, kind) =>
+            execFileSync(
+                "python3",
+                [
+                    "-c",
+                    `import sqlite3;r=sqlite3.connect('BackendASP.NET/db.sqlite').execute("select ${kind === "reset" ? "ResetToken" : "VerifyToken"} from Users where Email=?",('${email}',)).fetchone();print((r and r[0]) or '', end='')`,
+                ],
+                { cwd: dir },
+            )
+                .toString()
+                .trim(),
+    },
+    {
+        id: "spring",
+        dir: "CLIuno-Spring-template",
+        prepare: [
+            ["rm", ["-f", "db.sqlite"]],
+            ["./mvnw", ["-q", "-DskipTests", "package"]],
+        ],
+        start: () => ({ cmd: "java", args: ["-jar", "target/cliuno-spring-template-2.0.1.jar"] }),
+        env: { PORT: String(PORT) },
+        readToken: (dir, email, kind) =>
+            execFileSync(
+                "python3",
+                [
+                    "-c",
+                    `import sqlite3;r=sqlite3.connect('db.sqlite').execute("select ${kind === "reset" ? "reset_token" : "verify_token"} from users where email=?",('${email}',)).fetchone();print((r and r[0]) or '', end='')`,
+                ],
+                { cwd: dir },
+            )
+                .toString()
+                .trim(),
+    },
+    {
         id: "rails",
         dir: "CLIuno-Rails-template",
         prepare: [["bin/rails", ["db:prepare"]]],
@@ -238,8 +315,11 @@ const FRONTENDS = [
     { id: "vue", dir: "CLIuno-Vue-template", globs: ["src/apis"] },
     { id: "react", dir: "CLIuno-React-template", globs: ["src/apis"] },
     { id: "solid", dir: "CLIuno-Solid-template", globs: ["src/apis"] },
+    { id: "next", dir: "CLIuno-Next-template", globs: ["src/apis"] },
+    { id: "svelte", dir: "CLIuno-Svelte-template", globs: ["src/lib/apis"] },
     { id: "nuxt", dir: "CLIuno-Nuxt-template", globs: ["composables"] },
     { id: "angular", dir: "CLIuno-Angular-template", globs: ["src/app/services"] },
+    { id: "flutter", dir: "CLIuno-Flutter-template", globs: ["lib/apis"] },
 ];
 
 /* ------------------------------------------------- frontend extraction */
@@ -259,7 +339,7 @@ function extractEndpoints(feDir, globs) {
         const dir = path.join(feDir, g);
         if (!existsSync(dir)) continue;
         for (const f of readdirSync(dir)) {
-            if (!/\.(ts|js|mts)$/.test(f) || f.endsWith(".d.ts")) continue;
+            if (!/\.(ts|js|mts|dart)$/.test(f) || f.endsWith(".d.ts")) continue;
             const src = readFileSync(path.join(dir, f), "utf8");
             for (const m of src.matchAll(CALL_RE)) {
                 const raw = m[2];
@@ -494,6 +574,11 @@ async function runFlow(backend, dir) {
     const me2 = await req("GET", `${BASE}/users/current`, { token: ctx.token2 });
     ctx.userId2 = pick(me2.json ?? {}, ["data.user.id", "data.id", "user.id", "id"])?.value;
 
+    record(
+        "PATCH /users/current",
+        await req("PATCH", `${BASE}/users/current`, { ...T, body: { first_name: "Matrix" } }),
+        okShape("data.user"),
+    );
     record("GET /users", await req("GET", `${BASE}/users`, T), okShape("data.users"));
     if (ctx.userId) {
         record(

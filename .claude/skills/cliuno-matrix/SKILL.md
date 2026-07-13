@@ -1,6 +1,6 @@
 ---
 name: cliuno-matrix
-description: Run, debug, and extend the CLIuno frontend×backend compatibility matrix, and consult the shared API contract every template implements. Use this whenever working in the CLIuno workspace on anything API-shaped — adding or changing an endpoint in any backend template (Express, Nest, Django, FastAPI, Laravel, Rails), changing a frontend's API layer (Vue, React, Solid, Nuxt, Angular), adding a new template, investigating why a frontend and backend disagree, or when asked to "run the matrix", "check compatibility", "test the templates against each other", or verify the demo-app contract (auth/users/todos/posts/comments/follows/OTP).
+description: Run, debug, and extend the CLIuno frontend×backend compatibility matrix, and consult the shared API contract every template implements. Use this whenever working in the CLIuno workspace on anything API-shaped — adding or changing an endpoint in any backend template (Express, Nest, Fastify, Adonis, Django, FastAPI, Laravel, Rails, Spring, ASP.NET), changing a frontend's API layer (Vue, React, Solid, Next, Svelte, Nuxt, Angular, Flutter), adding a new template, investigating why a frontend and backend disagree, or when asked to "run the matrix", "check compatibility", "test the templates against each other", or verify the demo-app contract (auth/users/todos/posts/comments/follows/OTP).
 ---
 
 # CLIuno compatibility matrix
@@ -10,8 +10,8 @@ same demo app against one shared REST contract. The matrix proves every frontend
 every backend by booting each backend for real and driving the full contract flow with the
 exact payloads the frontends send.
 
-**The five frontends are the source of truth for the contract.** When a backend and a
-frontend disagree, fix the backend (or fix all five frontends together — never one).
+**The frontends are the source of truth for the contract.** When a backend and a
+frontend disagree, fix the backend (or fix all frontends together — never one).
 The full contract is in [references/contract.md](references/contract.md); read it before
 adding or changing any endpoint. Per-backend boot/DB/test details are in
 [references/backends.md](references/backends.md).
@@ -20,7 +20,7 @@ adding or changing any endpoint. Per-backend boot/DB/test details are in
 
 ```bash
 cd core
-pnpm test:matrix                      # full 5×6 board
+pnpm test:matrix                      # full board: 8 frontends × 10 backends
 node scripts/test-matrix.mjs --backends express            # one backend
 node scripts/test-matrix.mjs --backends rails --frontends vue --verbose
 ```
@@ -35,9 +35,10 @@ node scripts/test-matrix.mjs --backends rails --frontends vue --verbose
 
 ## How it works (so you can debug it)
 
-1. **Extraction** — regexes over each frontend's API layer (`src/apis/`, `composables/`,
-   `src/app/services/`) collect every `method + path` it calls. If you add a frontend API
-   file, extraction picks it up automatically; template-literal params become `:p`.
+1. **Extraction** — regexes over each frontend's API layer (`src/apis/`, `src/lib/apis/`,
+   `composables/`, `src/app/services/`, Flutter's `lib/apis/*.dart`) collect every
+   `method + path` it calls. If you add a frontend API file, extraction picks it up
+   automatically; template-literal (and Dart `${...}`) params become `:p`.
 2. **Flow** — one canonical run per backend: register two users → login → token
    management (check/refresh) → users/todos/posts/comments/follows CRUD → forgot/reset
    password (token read from the DB, then re-login) → email verification → the full OTP
@@ -65,8 +66,8 @@ Adding an endpoint end-to-end:
 
 1. Add it to the contract table in `references/contract.md` — payload and response shape
    modeled on what the frontends will destructure.
-2. Add the call to **all five** frontend API layers (they must stay identical in surface).
-3. Implement it in **all six** backends, matching each one's existing envelope helpers.
+2. Add the call to **every** frontend API layer (they must stay identical in surface).
+3. Implement it in **every** backend, matching each one's existing envelope helpers.
 4. Add a flow step in `runFlow()` in `core/scripts/test-matrix.mjs` — record with
    `okShape("data.<key>")` when frontends read a key, plain `ok2xx` otherwise. Steps that
    need a server-side secret (emailed tokens) read it via the backend's `readToken` hook.
