@@ -20,6 +20,7 @@ const links = new Map([
     ["ASP.NET", `${url}CLIuno-ASP.NET-template.git`],
     ["Spring Boot", `${url}CLIuno-Spring-template.git`],
     ["Flutter", `${url}CLIuno-Flutter-template.git`],
+    ["ReactNative", `${url}CLIuno-ReactNative-template.git`],
 ]);
 
 export { links };

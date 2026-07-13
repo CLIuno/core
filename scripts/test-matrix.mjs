@@ -248,6 +248,28 @@ const BACKENDS = [
                 .trim(),
     },
     {
+        id: "tallstack",
+        dir: "CLIuno-TallStack-template",
+        prepare: [["php", ["artisan", "migrate", "--force"]]],
+        start: () => ({
+            cmd: "php",
+            args: ["artisan", "serve", "--host=127.0.0.1", `--port=${PORT}`],
+        }),
+        readToken: (dir, email, kind) =>
+            execFileSync(
+                "php",
+                [
+                    "artisan",
+                    "tinker",
+                    "--execute",
+                    `echo optional(App\\Models\\User::where('email','${email}')->first())->${kind === "reset" ? "reset_password_token" : "verify_token"};`,
+                ],
+                { cwd: dir },
+            )
+                .toString()
+                .trim(),
+    },
+    {
         id: "aspnet",
         dir: "CLIuno-ASP.NET-template",
         prepare: [["rm", ["-f", "BackendASP.NET/db.sqlite"]]],
@@ -320,6 +342,7 @@ const FRONTENDS = [
     { id: "nuxt", dir: "CLIuno-Nuxt-template", globs: ["composables"] },
     { id: "angular", dir: "CLIuno-Angular-template", globs: ["src/app/services"] },
     { id: "flutter", dir: "CLIuno-Flutter-template", globs: ["lib/apis"] },
+    { id: "reactnative", dir: "CLIuno-ReactNative-template", globs: ["src/apis"] },
 ];
 
 /* ------------------------------------------------- frontend extraction */

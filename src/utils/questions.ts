@@ -32,8 +32,11 @@ export const questions = {
     },
 
     RestApiMobile: {
-        message: "( Only Flutter is available for now ):",
-        choices: [{ name: "Flutter", value: "Flutter" }],
+        message: "Choose the mobile framework which you want to use:",
+        choices: [
+            { name: "Flutter", value: "Flutter" },
+            { name: "React Native", value: "ReactNative" },
+        ],
     },
 
     RestApiFrontend: {
