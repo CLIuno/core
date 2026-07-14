@@ -26,6 +26,8 @@ pnpm release         # build + changeset publish
   backend template, drives the shared contract flow with real frontend payloads (including
   a live TOTP), extracts each frontend's API calls, grades all pairs into
   `matrix-report.json` (gitignored). Full guide: `.claude/skills/cliuno-matrix/SKILL.md`.
+- `.claude/skills/cliuno-scaffold/` — the "build on templates, not from scratch" skill:
+  stack chooser, clone/install per stack, shadcn UI conventions, quality gates.
 
 ## Conventions
 
