@@ -10,6 +10,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 permissions:
   contents: write
   pull-requests: write
+  id-token: write # OIDC token for npm trusted publishing
 
 jobs:
   publish:
@@ -27,8 +28,13 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
+          registry-url: "https://registry.npmjs.org"
           cache: "pnpm"
+
+      # Trusted publishing needs npm >= 11.5.1 (changeset publish shells out to npm).
+      - name: Upgrade npm for OIDC trusted publishing
+        run: npm install -g npm@latest
 
       - name: Install Dependencies
         run: pnpm install
@@ -36,11 +42,14 @@ jobs:
       - name: Build Project
         run: pnpm build
 
+      # `changeset publish` only publishes versions newer than what's on npm, so a push
+      # with no pending release is a no-op instead of re-publishing the current version.
+      # Auth is via OIDC (configure the trusted publisher for `cliuno` on npmjs.com);
+      # no NPM_TOKEN secret is required.
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm publish --access public --no-git-checks
+          publish: pnpm exec changeset publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
