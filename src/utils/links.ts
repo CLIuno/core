@@ -21,6 +21,7 @@ const links = new Map([
     ["Spring Boot", `${url}CLIuno-Spring-template.git`],
     ["Flutter", `${url}CLIuno-Flutter-template.git`],
     ["ReactNative", `${url}CLIuno-ReactNative-template.git`],
+    ["Drogon", `${url}CLIuno-Drogon-template.git`],
 ]);
 
 export { links };
