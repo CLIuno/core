@@ -331,6 +331,53 @@ const BACKENDS = [
                 .toString()
                 .trim(),
     },
+    {
+        // Drogon is C++; it builds and runs inside the official drogon image
+        // (the host needs docker + the drogonframework/drogon:latest image).
+        // Everything runs as the host user so build/ and cliuno.db stay readable.
+        id: "drogon",
+        dir: "CLIuno-Drogon-template",
+        prepare: [
+            ["docker", ["rm", "-f", "cliuno-drogon-matrix"]],
+            // Clean as root first: the README's build command runs as root, so a
+            // stray root-owned build/ can exist; remove it before the user-owned build.
+            [
+                "bash",
+                ["-lc", 'docker run --rm -v "$PWD":/app -w /app drogonframework/drogon:latest rm -rf build cliuno.db'],
+            ],
+            [
+                "bash",
+                [
+                    "-lc",
+                    'docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/app -w /app ' +
+                        "-e CC=gcc-11 -e CXX=g++-11 drogonframework/drogon:latest " +
+                        'bash -lc "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build -j2"',
+                ],
+            ],
+        ],
+        start: () => ({
+            cmd: "bash",
+            args: [
+                "-lc",
+                'exec docker run --rm --init --user "$(id -u):$(id -g)" ' +
+                    "--name cliuno-drogon-matrix " +
+                    `-p 127.0.0.1:${PORT}:${PORT} -v "$PWD":/app -w /app -e PORT=${PORT} ` +
+                    "drogonframework/drogon:latest ./build/cliuno_drogon",
+            ],
+        }),
+        readToken: (dir, email, kind) =>
+            execFileSync(
+                "python3",
+                [
+                    "-c",
+                    `import sqlite3,sys;c=sqlite3.connect('cliuno.db');r=c.execute("SELECT ${kind === "reset" ? "reset_token" : "verify_token"} FROM users WHERE email=?",(sys.argv[1],)).fetchone();print((r[0] if r and r[0] else ''),end='')`,
+                    email,
+                ],
+                { cwd: dir },
+            )
+                .toString()
+                .trim(),
+    },
 ];
 
 const FRONTENDS = [

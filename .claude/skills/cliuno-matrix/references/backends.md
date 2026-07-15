@@ -16,6 +16,7 @@ How each backend template boots, stores data, and verifies. The matrix registry 
 | **Spring**    | `./mvnw -q -DskipTests package` then `java -jar target/cliuno-spring-template-*.jar`                      | sqlite `db.sqlite`, Hibernate `ddl-auto=update`                                 | `./mvnw test` (context loads)                                              |
 | **ASP.NET**   | `~/.dotnet/dotnet run --project BackendASP.NET` (`PORT`)                                                  | sqlite `BackendASP.NET/db.sqlite`, EF Core `EnsureCreated` (PascalCase columns) | `dotnet build` (0 warnings)                                                |
 | **TallStack** | `php artisan migrate --force` then `artisan serve` (same as Laravel)                                      | sqlite `database/database.sqlite`, migrations                                   | `php artisan test` (43) · `./vendor/bin/pint --test`                       |
+| **Drogon**    | builds + runs inside `drogonframework/drogon:latest` via `docker run` (host needs docker + the image)     | sqlite `cliuno.db`, volume-mounted from the repo dir, created on boot           | build in the image (`cmake --build`); CI also smoke-tests register/login   |
 
 ## Matrix hooks
 
@@ -68,5 +69,11 @@ How each backend template boots, stores data, and verifies. The matrix registry 
   that.
 - **Flutter frontend**: `lib/apis/*.dart` uses `'${id}'` brace interpolation on purpose —
   extraction maps `${...}` to `:p` exactly like the JS template literals.
+- **Drogon**: C++17; the matrix `prepare` builds inside the drogon image as the host user
+  (`--user $(id -u):$(id -g)` so `build/` + `cliuno.db` stay host-readable), cleaning any
+  root-owned `build/` first (the README build runs as root). `start` does `docker run
+--init -p 127.0.0.1:PORT:PORT` so SIGTERM tears the container down with `--rm`. `readToken`
+  reads the volume-mounted `cliuno.db` with host `python3`. Requires the image pulled; on
+  WSL where the docker credential helper is broken, `docker run` of a local image still works.
 - **React Native frontend**: Expo SDK 57; `src/apis/` mirrors the React template
   one-to-one (same 29 endpoints). AsyncStorage v3 renamed `multiRemove` → `removeMany`.
