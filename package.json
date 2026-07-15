@@ -26,6 +26,9 @@
     "bin": {
         "cliuno": "dist/app.js"
     },
+    "files": [
+        "dist"
+    ],
     "type": "module",
     "main": "dist/app.js",
     "module": "dist/app.js",
