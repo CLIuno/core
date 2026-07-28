@@ -41,7 +41,29 @@ OTP endpoints act on the **authenticated user** — never a usernameOrEmail body
 One-time tokens (reset/verify) are stored on the user row so lookup-by-token works;
 registration also stores the verify token it emails.
 
+## Uploads
+
+| Endpoint              | Body                                       | Response `data`   |
+| --------------------- | ------------------------------------------ | ----------------- |
+| `POST /uploads/image` | multipart/form-data, field `file` (Bearer) | `url`, `filename` |
+
+`data.url` is **absolute** (`http://localhost:3000/uploads/<uuid>.png`) so a frontend on
+another origin can use it directly as an image source; it comes from `PUBLIC_BASE_URL` when
+set, else the request origin. The file is then served publicly and unauthenticated at
+`GET /uploads/<filename>` — at the root, _not_ under the `/api/v1` prefix.
+
+Accepts `image/png|jpeg|webp|gif` up to **5 MB**; 400 on a missing or disallowed file, 413
+when oversized, 401 without a token. The stored name is `<uuid>.<ext>` with the extension
+derived from the detected mime, never from the client's filename.
+
+Upload never mutates a resource — the client attaches the returned URL itself via
+`PATCH /users/current {avatar_url}` or `POST /posts {image_url}`. Backends do **not** delete
+a replaced avatar's file; GC of orphaned uploads is left to the application.
+
 ## Users
+
+Every serialized user carries `avatar_url` (nullable) — register, login, current, list,
+by-id, and by-username all include it.
 
 | Endpoint                                  | Response `data`                         |
 | ----------------------------------------- | --------------------------------------- |
@@ -64,7 +86,8 @@ Creates attach the **authenticated user as owner**.
 
 `GET /posts` → `data.posts` (include user + comments) · `GET /posts/current-user` →
 `data.posts` · `POST /posts {title, content}` → created post (author = Bearer user;
-`imageUrl` optional) · `GET/PATCH/DELETE /posts/:id` → `data.post` ·
+`image_url` optional — responses always use the snake_case key, create/update also accept
+the `imageUrl` alias) · `GET/PATCH/DELETE /posts/:id` → `data.post` ·
 `GET /posts/:id/user` → `data.user` · comments nest under posts:
 `GET|POST /posts/:id/comments` → `data.comments`/`data.comment`,
 `PATCH|DELETE /posts/:id/comments/:commentId`.

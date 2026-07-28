@@ -395,7 +395,11 @@ const FRONTENDS = [
 /* ------------------------------------------------- frontend extraction */
 
 // Matches http.get('/x'), http.post(`/x/${id}`), this.http.get<T>(`/x`), ...
-const CALL_RE = /\.(get|post|patch|put|delete)\s*(?:<[^>()]*>)?\(\s*[`'"]([^`'"]+)[`'"]/g;
+// The optional generic allows one level of nesting so Angular's
+// `.patch<ApiResponse<{ user: User }>>('/path')` is seen — a flat `<[^>()]*>`
+// stops at the inner `>` and silently drops those calls from the surface.
+const CALL_RE =
+    /\.(get|post|patch|put|delete)\s*(?:<(?:[^<>()]|<[^<>()]*>)*>)?\(\s*[`'"]([^`'"]+)[`'"]/g;
 
 function normalizePath(p) {
     let out = p.replace(/\$\{[^}]+\}/g, ":p");
@@ -501,6 +505,44 @@ async function req(method, url, { token, body } = {}) {
         clearTimeout(t);
     }
 }
+
+// multipart/form-data upload — native FormData/Blob so fetch writes the boundary itself.
+// Never set Content-Type by hand here or the boundary is lost and every parser 400s.
+async function reqForm(method, url, { token, field = "file", bytes, filename, type } = {}) {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), STEP_TIMEOUT_MS);
+    try {
+        const form = new FormData();
+        form.append(field, new Blob([bytes], { type }), filename);
+        const res = await fetch(url, {
+            method,
+            signal: ctrl.signal,
+            headers: {
+                Accept: "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: form,
+        });
+        let json = null;
+        const text = await res.text();
+        try {
+            json = JSON.parse(text);
+        } catch {
+            /* non-json body */
+        }
+        return { status: res.status, json, text };
+    } catch (e) {
+        return { status: 0, json: null, text: String(e) };
+    } finally {
+        clearTimeout(t);
+    }
+}
+
+// Smallest valid PNG (1x1 RGBA) — real bytes, so mime sniffing backends accept it.
+const TINY_PNG = Buffer.from(
+    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+    "base64",
+);
 
 // Minimal TOTP (RFC 6238, sha1/6 digits/30s) so the OTP endpoints get tested end-to-end.
 function base32Decode(str) {
@@ -649,6 +691,33 @@ async function runFlow(backend, dir) {
         await req("PATCH", `${BASE}/users/current`, { ...T, body: { first_name: "Matrix" } }),
         okShape("data.user"),
     );
+    // -- image upload: bytes in, absolute URL out, then attached to the profile
+    const up = await reqForm("POST", `${BASE}/uploads/image`, {
+        ...T,
+        bytes: TINY_PNG,
+        filename: "matrix.png",
+        type: "image/png",
+    });
+    const upUrl = pick(up.json ?? {}, ["data.url"]);
+    record("POST /uploads/image", up, okShape("data.url"), upUrl ? "" : "no url in response");
+    ctx.imageUrl = upUrl?.value;
+    if (ctx.imageUrl) {
+        // the URL must actually serve the bytes back, unauthenticated
+        record("GET /uploads/:p", await req("GET", ctx.imageUrl), ok2xx, "static file served");
+        const patched = await req("PATCH", `${BASE}/users/current`, {
+            ...T,
+            body: { avatar_url: ctx.imageUrl },
+        });
+        const back = await req("GET", `${BASE}/users/current`, T);
+        const stored = pick(back.json ?? {}, ["data.user.avatar_url"])?.value;
+        record(
+            "PATCH /users/current (avatar_url)",
+            patched,
+            (r) => ok2xx(r) && stored === ctx.imageUrl,
+            stored === ctx.imageUrl ? "avatar_url round-trips" : `stored ${stored ?? "nothing"}`,
+        );
+    }
+
     record("GET /users", await req("GET", `${BASE}/users`, T), okShape("data.users"));
     if (ctx.userId) {
         record(
@@ -731,7 +800,11 @@ async function runFlow(backend, dir) {
     // -- posts + nested comments
     const postC = await req("POST", `${BASE}/posts`, {
         ...T,
-        body: { title: "matrix post", content: "made by test-matrix" },
+        body: {
+            title: "matrix post",
+            content: "made by test-matrix",
+            ...(ctx.imageUrl ? { image_url: ctx.imageUrl } : {}),
+        },
     });
     const postId = pick(postC.json ?? {}, [
         "data.post.id",
