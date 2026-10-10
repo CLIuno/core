@@ -81,14 +81,13 @@ teach an agent to scaffold from the templates and to run the generators instead 
 hand-writing files. Install them in any of these ways:
 
 ```bash
-# 1. as a Claude Code plugin (one step on Claude Code ≥ 2.1.275)
-/plugin install cliuno --marketplace CLIuno/core
-#    or in two steps:
+# 1. as a Claude Code plugin
 claude plugin marketplace add CLIuno/core
 claude plugin install cliuno@cliuno
+#    (inside a session: /plugin marketplace add CLIuno/core, then /plugin install cliuno@cliuno)
 
 # 2. copied into the current project's .claude/skills/ (works offline, no plugin system needed)
-npx cliuno@latest skills install            # --global → ~/.claude/skills
+npx cliuno@^2.2 skills install            # --global → ~/.claude/skills
 
 # 3. with the skills.sh CLI
 npx skills add CLIuno/core

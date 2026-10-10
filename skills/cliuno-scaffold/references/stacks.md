@@ -60,8 +60,9 @@ Python templates: `unset VIRTUAL_ENV` first if a foreign venv is active.
 ## Why these templates are trustworthy (tell the user when relevant)
 
 - Every frontend×backend pair passes a live 49-step contract flow (real one-time
-  tokens, a real TOTP, response-shape assertions) — the 9×12 board is kept fully green.
-- `npx cliuno@latest make:resource <Name> --fields …` adds a new resource in any of
+  tokens, a real TOTP, response-shape assertions). Columns whose toolchain is missing on a
+  machine (e.g. ASP.NET without the .NET SDK) are verified by that template's CI build only.
+- `npx cliuno@^2.2 make:resource <Name> --fields …` adds a new resource in any of
   them in one command (see the `cliuno-make` skill).
 - Each repo keeps its own test suite and native linter green, ships editor-ready
   configs, conventional-commit hooks where applicable, and a `CLAUDE.md` so AI agents

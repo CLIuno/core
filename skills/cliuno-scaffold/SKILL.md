@@ -10,7 +10,8 @@ metadata:
 CLIuno is one CLI plus 21 templates that all implement the **same demo app** (JWT auth
 with refresh/reset/verify-email/OTP, users, todos, posts+comments, follows) against one
 shared REST contract. Every frontend×backend pair is proven by a live compatibility
-matrix (9 frontends × 12 backends, all green) — so instead of generating boilerplate,
+matrix (9 frontends × every backend; locally verified columns are listed in the
+`cliuno-matrix` skill) — so instead of generating boilerplate,
 you clone a template that already has auth, CRUD, tests, linting, CI-grade quality
 gates, and a `CLAUDE.md` briefing for AI agents, then reshape it into what the user
 wants.
@@ -56,10 +57,10 @@ them, and [references/stacks.md](references/stacks.md) has the full per-stack ta
 ## After scaffolding — reshape, don't rebuild
 
 1. **Install the CLIuno skills into the project** so every later session has them:
-   `npx cliuno@latest skills install` (check with `skills status`).
+   `npx cliuno@^2.2 skills install` (check with `skills status`).
 2. **Rename**: package name / app id / titles to the user's project name.
 3. **Generate the user's real resources instead of writing them**:
-   `npx cliuno@latest make:resource Product --fields name:string,price:number,inStock:boolean`
+   `npx cliuno@^2.2 make:resource Product --fields name:string,price:number,inStock:boolean`
    produces the route/controller/model/validation/test (or api/store/pages) in the
    template's own conventions — see the `cliuno-make` skill. Then edit fields and
    business logic only.

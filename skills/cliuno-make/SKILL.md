@@ -16,15 +16,15 @@ thousands of tokens and drifts from the conventions — **run the generator, the
 ## Workflow
 
 1. **Make sure the skills are present** (once per project):
-   `npx cliuno@latest skills status` → if anything is `missing`/`outdated`,
-   `npx cliuno@latest skills install` (adds `.claude/skills/cliuno-*`; `--global` for `~/.claude/skills`).
-2. **See what this stack supports**: `npx cliuno@latest make` (run anywhere inside the
+   `npx cliuno@^2.2 skills status` → if anything is `missing`/`outdated`,
+   `npx cliuno@^2.2 skills install` (adds `.claude/skills/cliuno-*`; `--global` for `~/.claude/skills`).
+2. **See what this stack supports**: `npx cliuno@^2.2 make` (run anywhere inside the
    project — detection walks up to the manifest). It lists the kinds and marks which ones
    delegate to the framework's own CLI (`[native: php]`, `node ace`, `bin/rails`, `ng`).
 3. **Generate the resource**:
 
     ```bash
-    npx cliuno@latest make:resource Product --fields name:string,price:number,inStock:boolean,notes:text?
+    npx cliuno@^2.2 make:resource Product --fields name:string,price:number,inStock:boolean,notes:text?
     ```
 
     Unsure? Add `--dry-run` to print every file and patch without writing. Re-running is
