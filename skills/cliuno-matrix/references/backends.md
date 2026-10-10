@@ -72,7 +72,7 @@ How each backend template boots, stores data, and verifies. The matrix registry 
 - **Drogon**: C++17; the matrix `prepare` builds inside the drogon image as the host user
   (`--user $(id -u):$(id -g)` so `build/` + `cliuno.db` stay host-readable), cleaning any
   root-owned `build/` first (the README build runs as root). `start` does `docker run
---init -p 127.0.0.1:PORT:PORT` so SIGTERM tears the container down with `--rm`. `readToken`
+  --init -p 127.0.0.1:PORT:PORT` so SIGTERM tears the container down with `--rm`. `readToken`
   reads the volume-mounted `cliuno.db` with host `python3`. Requires the image pulled; on
   WSL where the docker credential helper is broken, `docker run` of a local image still works.
 - **React Native frontend**: Expo SDK 57; `src/apis/` mirrors the React template

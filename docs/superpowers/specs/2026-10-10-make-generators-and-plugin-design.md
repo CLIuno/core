@@ -219,7 +219,7 @@ matches the template's imports, helpers, envelope, lint rules and formatting (4-
   resources. The interactive `cliuno` also prints a one-line hint when the cwd has a
   `CLAUDE.md`/`.claude/` but no CLIuno skills.
 - README: install via `claude plugin marketplace add CLIuno/core` + `claude plugin install
-cliuno@cliuno`, or `npx skills add CLIuno/core`, or `cliuno skills install`.
+  cliuno@cliuno`, or `npx skills add CLIuno/core`, or `cliuno skills install`.
 
 ## 7. Dependency refresh policy (workstream 2 and 3)
 
