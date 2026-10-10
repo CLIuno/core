@@ -17,7 +17,7 @@ import {
 /*
  * CLIuno-TallStack-template serves the same REST contract as the Laravel template (its API
  * layer is a port), so the model/migration/controller/route stubs are shared. Differences:
- * PHPUnit class tests instead of Pest, and a Livewire/Volt UI that a resource can get a page for.
+ * PHPUnit class tests instead of Pest, and a Livewire 4 single-file-component UI a resource can get a page for.
  */
 
 /** PHPUnit feature test (the TallStack template uses class-based tests, e.g. tests/Feature/TodosTest.php). */
@@ -165,11 +165,11 @@ ${createdDb}
     };
 }
 
-function voltNote(ctx: Ctx): string[] {
+function livewireNote(ctx: Ctx): string[] {
     const { names } = ctx;
     const kp = names.plural.kebab;
     return [
-        `Livewire UI: copy resources/views/livewire/pages/todos.blade.php to resources/views/livewire/pages/${kp}.blade.php, swap Todo for ${names.pascal}, then add Volt::route('${kp}', 'pages.${kp}')->name('${kp}') inside the auth group in routes/web.php and a nav link in resources/views/livewire/layout/navigation.blade.php.`,
+        `Livewire UI (optional): \`cliuno make:page ${names.pascal}\` (or \`php artisan make:livewire pages.${kp}\`) creates resources/views/livewire/pages/${kp}.blade.php — copy the body of pages/todos.blade.php and swap Todo for ${names.pascal}.`,
     ];
 }
 
@@ -184,7 +184,7 @@ export const tallstack: Generator = {
                 "model + migration + controller (inline validation) + routes in routes/api.php + PHPUnit feature test",
             files: (ctx) => [model(ctx), migration(ctx), controller(ctx), phpunitTest(ctx)],
             patches: (ctx) => [...apiRoutePatches(ctx), userRelationPatch(ctx)],
-            notes: (ctx) => [...resourceNotes(ctx), ...voltNote(ctx)],
+            notes: (ctx) => [...resourceNotes(ctx), ...livewireNote(ctx)],
         },
         model: {
             describe: "Eloquent model in app/Models/",
@@ -210,6 +210,14 @@ export const tallstack: Generator = {
             describe: "PHPUnit feature test in tests/Feature/",
             native: (ctx) => artisan("make:test", `${ctx.names.plural.pascal}Test`),
             files: (ctx) => [phpunitTest(ctx)],
+        },
+        page: {
+            describe:
+                "Livewire 4 single-file page in resources/views/livewire/pages/ (+ route in routes/web.php)",
+            native: (ctx) => artisan("make:livewire", `pages.${ctx.names.plural.kebab}`, "--sfc"),
+            notes: (ctx) => [
+                `Add the route inside the auth group in routes/web.php: Route::livewire('${ctx.names.plural.kebab}', 'pages.${ctx.names.plural.kebab}')->name('${ctx.names.plural.kebab}');`,
+            ],
         },
     },
 };

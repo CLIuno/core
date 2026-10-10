@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { Ctx, FileSpec, Generator } from "../types";
 import type { Field } from "../fields";
 import { labelField } from "../fields";
@@ -16,12 +18,20 @@ import {
 // Nuxt auto-imports composables, stores and components/ui and uses file routing, so a
 // resource is just three files — nothing to register.
 
+/** Nuxt 4 keeps the app in `app/`; older Nuxt 3-style checkouts keep pages/ at the root. */
+function srcDir(ctx: Ctx): string {
+    const has = (p: string) => fs.existsSync(path.join(ctx.cwd, p));
+    if (has("app/pages") || has("app/app.vue")) return "app/";
+    if (has("pages") || has("app.vue")) return "";
+    return "app/";
+}
+
 function composable(ctx: Ctx): FileSpec {
     const { names } = ctx;
     const P = names.pascal;
     const path = names.plural.kebab;
     return {
-        path: `composables/use${P}Api.ts`,
+        path: `${srcDir(ctx)}composables/use${P}Api.ts`,
         content: `${inputIface(ctx)}
 
 export function use${P}Api() {
@@ -84,7 +94,7 @@ function listPage(ctx: Ctx): FileSpec {
     const lower = names.title.toLowerCase();
     const lowerPlural = names.plural.title.toLowerCase();
     return {
-        path: `pages/${names.plural.kebab}/index.vue`,
+        path: `${srcDir(ctx)}pages/${names.plural.kebab}/index.vue`,
         content: `<script setup lang="ts">
 import { Loader2Icon, PackageIcon, PlusIcon, Trash2Icon, UserIcon } from '@lucide/vue'
 
@@ -248,7 +258,7 @@ function detailPage(ctx: Ctx): FileSpec {
     const label = labelField(fields);
     const others = fields.filter((f) => f !== label);
     return {
-        path: `pages/${names.plural.kebab}/[id].vue`,
+        path: `${srcDir(ctx)}pages/${names.plural.kebab}/[id].vue`,
         content: `<script setup lang="ts">
 import { ArrowLeftIcon, Loader2Icon, Trash2Icon, UserIcon } from '@lucide/vue'
 
@@ -352,7 +362,7 @@ function store(ctx: Ctx): FileSpec {
     const P = names.pascal;
     const apiVar = `${names.camel}Api`;
     return {
-        path: `stores/${names.kebab}.ts`,
+        path: `${srcDir(ctx)}stores/${names.kebab}.ts`,
         content: `${iface(ctx)}
 
 export const use${P}Store = defineStore('${names.camel}', () => {
@@ -400,12 +410,12 @@ export const nuxt: Generator = {
             ],
         },
         api: {
-            describe: "use<Name>Api composable in composables/ (auto-imported)",
+            describe: "use<Name>Api composable in app/composables/ (auto-imported)",
             files: (ctx) => [composable(ctx)],
             notes: (ctx) => [lintHint(ctx)],
         },
         page: {
-            describe: "list + detail pages in pages/<kebab-plural>/ (file-routed)",
+            describe: "list + detail pages in app/pages/<kebab-plural>/ (file-routed)",
             files: (ctx) => [listPage(ctx), detailPage(ctx)],
         },
         store: {
