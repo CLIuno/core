@@ -1,0 +1,14 @@
+{
+    "name": "cliuno",
+    "version": "2.1.1",
+    "description": "Scaffold full-stack apps from CLIuno's contract-tested templates, generate resources with `cliuno make:*`, and run the compatibility matrix.",
+    "author": {
+        "name": "ru44",
+        "url": "https://github.com/ru44"
+    },
+    "homepage": "https://cliuno.github.io",
+    "repository": "https://github.com/CLIuno/core",
+    "license": "MIT",
+    "keywords": ["cliuno", "scaffold", "generator", "fullstack", "templates"],
+    "skills": ["./skills/"]
+}

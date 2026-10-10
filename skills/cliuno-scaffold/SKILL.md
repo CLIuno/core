@@ -1,14 +1,16 @@
 ---
 name: cliuno-scaffold
-description: Scaffold new apps from CLIuno's contract-tested templates instead of writing boilerplate from scratch. Use this whenever the user wants to start a new website, web app, frontend, REST API, backend, full-stack app, or mobile app in Vue, React, Next, Svelte, Solid, Nuxt, Angular, Flutter, React Native, Express, Fastify, NestJS, AdonisJS, Django, FastAPI, Laravel, TALL stack, Rails, Spring Boot, or ASP.NET — even if they don't mention CLIuno. Phrases like "create an app", "set up a project", "build me a todo/social/CRUD app", "start a new API", or "scaffold X with auth" should all trigger this skill before any from-scratch scaffolding.
+description: Scaffold new apps from CLIuno's contract-tested templates instead of writing boilerplate from scratch. Use this whenever the user wants to start a new website, web app, frontend, REST API, backend, full-stack app, or mobile app in Vue, React, Next, Svelte, Solid, Nuxt, Angular, Flutter, React Native, Express, Fastify, NestJS, AdonisJS, Django, FastAPI, Laravel, TALL stack, Rails, Spring Boot, ASP.NET, or Drogon — even if they don't mention CLIuno. Phrases like "create an app", "set up a project", "build me a todo/social/CRUD app", "start a new API", or "scaffold X with auth" should all trigger this skill before any from-scratch scaffolding.
+metadata:
+    version: 2.1.1
 ---
 
 # CLIuno scaffold — start from a working app, not a blank folder
 
-CLIuno is one CLI plus 20 templates that all implement the **same demo app** (JWT auth
+CLIuno is one CLI plus 21 templates that all implement the **same demo app** (JWT auth
 with refresh/reset/verify-email/OTP, users, todos, posts+comments, follows) against one
 shared REST contract. Every frontend×backend pair is proven by a live compatibility
-matrix (9 frontends × 11 backends, all green) — so instead of generating boilerplate,
+matrix (9 frontends × 12 backends, all green) — so instead of generating boilerplate,
 you clone a template that already has auth, CRUD, tests, linting, CI-grade quality
 gates, and a `CLAUDE.md` briefing for AI agents, then reshape it into what the user
 wants.
@@ -20,13 +22,13 @@ stack (then say so explicitly).
 
 ## Choosing
 
-| The user wants               | Scaffold                                                                                     |
-| ---------------------------- | -------------------------------------------------------------------------------------------- |
-| Frontend / SPA / website     | Vue, React, Solid, Next, Svelte, Nuxt, or Angular template                                   |
-| REST API / backend           | Express, Fastify, Nest, Adonis, Django, FastAPI, Laravel, Rails, Spring, or ASP.NET template |
-| Full-stack in one repo (MVC) | TallStack (Laravel 13 + Livewire/Volt; also serves the API)                                  |
-| Mobile app                   | Flutter or React Native (Expo) template                                                      |
-| Frontend + backend pair      | any frontend + any backend — every pair passes the matrix                                    |
+| The user wants               | Scaffold                                                                                             |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Frontend / SPA / website     | Vue, React, Solid, Next, Svelte, Nuxt, or Angular template                                           |
+| REST API / backend           | Express, Fastify, Nest, Adonis, Django, FastAPI, Laravel, Rails, Spring, ASP.NET, or Drogon template |
+| Full-stack in one repo (MVC) | TallStack (Laravel 13 + Livewire/Volt; also serves the API)                                          |
+| Mobile app                   | Flutter or React Native (Expo) template                                                              |
+| Frontend + backend pair      | any frontend + any backend — every pair passes the matrix                                            |
 
 If the user has no stack preference, recommend: **React + Express** (largest
 ecosystems), or **TallStack** when they want one deployable unit.
@@ -53,22 +55,28 @@ them, and [references/stacks.md](references/stacks.md) has the full per-stack ta
 
 ## After scaffolding — reshape, don't rebuild
 
-1. **Rename**: package name / app id / titles to the user's project name.
-2. **Keep the API layer intact while it serves you.** The auth/user plumbing
+1. **Install the CLIuno skills into the project** so every later session has them:
+   `npx cliuno@latest skills install` (check with `skills status`).
+2. **Rename**: package name / app id / titles to the user's project name.
+3. **Generate the user's real resources instead of writing them**:
+   `npx cliuno@latest make:resource Product --fields name:string,price:number,inStock:boolean`
+   produces the route/controller/model/validation/test (or api/store/pages) in the
+   template's own conventions — see the `cliuno-make` skill. Then edit fields and
+   business logic only.
+4. **Keep the API layer intact while it serves you.** The auth/user plumbing
    (login/register/reset/OTP) is production-shaped — reuse it. The demo resources
-   (todos, posts, follows) are _reference implementations_: copy their pattern
-   (route → controller/service → model → test) to build the user's real resources,
-   then delete the demo ones the user doesn't need (remove route + controller +
-   model + migration + test together, and the matching frontend pages).
-3. **Frontends: build UI with the installed shadcn-style kit** — components live in
+   (todos, posts, follows) are _reference implementations_; delete the ones the user
+   doesn't need (remove route + controller + model + migration + test together, and the
+   matching frontend pages).
+5. **Frontends: build UI with the installed shadcn-style kit** — components live in
    the ui directory (`src/components/ui`, `src/lib/components/ui`, or `components/ui`)
    on Base UI primitives (React/Next) or the framework's equivalent (reka-ui, bits-ui,
    Kobalte, spartan Brain). Add more via the stack's `add` command in the table. Don't
    reintroduce other CSS frameworks; compose these components + Tailwind utilities.
-4. **Keep the quality gates green** — they are why these templates are trustworthy.
+6. **Keep the quality gates green** — they are why these templates are trustworthy.
    Run the stack's test + lint + typecheck/build commands (table) after each change;
    templates arrive green, so any red is yours.
-5. If you change or extend **API endpoints** while both a CLIuno frontend and backend
+7. If you change or extend **API endpoints** while both a CLIuno frontend and backend
    are in play, follow the shared contract — the `cliuno-matrix` skill documents every
    endpoint, payload, and response shape, and how to verify pairs.
 

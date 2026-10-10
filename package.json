@@ -3,14 +3,19 @@
     "version": "2.1.1",
     "description": "CLIuno is a CLI tool to make your journey in web development less painful (it makes your life way easier).",
     "keywords": [
+        "agent-skills",
         "all in one",
         "all-in-1",
         "all-in-one",
         "automation",
+        "claude-code",
+        "claude-skills",
         "cli",
         "cliuno",
+        "generator",
         "javascript",
         "nodeJs",
+        "scaffold",
         "typescript"
     ],
     "homepage": "https://github.com/CLIuno/core#readme",
@@ -27,7 +32,8 @@
         "cliuno": "dist/app.js"
     },
     "files": [
-        "dist"
+        "dist",
+        "skills"
     ],
     "type": "module",
     "main": "dist/app.js",
@@ -42,7 +48,10 @@
         "test:matrix": "node scripts/test-matrix.mjs",
         "build": "tsup",
         "release": "pnpm build && changeset publish",
-        "prepare": "husky"
+        "prepare": "husky",
+        "test": "node --import tsx --test \"src/**/*.test.ts\"",
+        "prebuild": "node scripts/stamp-version.mjs",
+        "changeset:version": "changeset version && node scripts/stamp-version.mjs"
     },
     "dependencies": {
         "@inquirer/prompts": "^8.3.2",

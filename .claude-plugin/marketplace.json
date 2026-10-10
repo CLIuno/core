@@ -1,0 +1,18 @@
+{
+    "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+    "name": "cliuno",
+    "owner": {
+        "name": "ru44",
+        "url": "https://github.com/ru44"
+    },
+    "description": "CLIuno skills: scaffold full-stack apps from contract-tested templates, generate resources with `cliuno make:*`, and run the frontend×backend compatibility matrix.",
+    "plugins": [
+        {
+            "name": "cliuno",
+            "source": "./",
+            "description": "Scaffold apps from CLIuno templates, generate resources with cliuno make:*, and verify the shared REST contract.",
+            "category": "development",
+            "tags": ["scaffold", "generator", "fullstack", "templates", "rest-api"]
+        }
+    ]
+}
