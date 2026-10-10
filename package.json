@@ -3,14 +3,19 @@
     "version": "2.1.1",
     "description": "CLIuno is a CLI tool to make your journey in web development less painful (it makes your life way easier).",
     "keywords": [
+        "agent-skills",
         "all in one",
         "all-in-1",
         "all-in-one",
         "automation",
+        "claude-code",
+        "claude-skills",
         "cli",
         "cliuno",
+        "generator",
         "javascript",
         "nodeJs",
+        "scaffold",
         "typescript"
     ],
     "homepage": "https://github.com/CLIuno/core#readme",
@@ -27,7 +32,8 @@
         "cliuno": "dist/app.js"
     },
     "files": [
-        "dist"
+        "dist",
+        "skills"
     ],
     "type": "module",
     "main": "dist/app.js",
@@ -42,27 +48,30 @@
         "test:matrix": "node scripts/test-matrix.mjs",
         "build": "tsup",
         "release": "pnpm build && changeset publish",
-        "prepare": "husky"
+        "prepare": "husky",
+        "test": "node --import tsx --test \"src/**/*.test.ts\"",
+        "prebuild": "node scripts/stamp-version.mjs",
+        "changeset:version": "changeset version && node scripts/stamp-version.mjs"
     },
     "dependencies": {
-        "@inquirer/prompts": "^8.3.2",
-        "chalk": "^5.6.2",
+        "@inquirer/prompts": "^8.7.3",
+        "chalk": "^6.0.1",
         "shelljs": "^0.10.0"
     },
     "devDependencies": {
-        "@changesets/cli": "^2.30.0",
-        "@commitlint/cli": "^20.5.0",
-        "@commitlint/config-conventional": "^20.5.0",
-        "@types/node": "^25.5.0",
+        "@changesets/cli": "^3.0.3",
+        "@commitlint/cli": "^21.2.3",
+        "@commitlint/config-conventional": "^21.2.3",
+        "@types/node": "^26.6.4",
         "@types/shelljs": "^0.10.0",
-        "globals": "^17.4.0",
+        "globals": "^17.13.0",
         "husky": "^9.1.7",
-        "lint-staged": "^16.4.0",
-        "oxfmt": "^0.44.0",
-        "oxlint": "^1.59.0",
+        "lint-staged": "^17.6.0",
+        "oxfmt": "^0.72.0",
+        "oxlint": "^1.87.0",
         "tsup": "^8.5.1",
-        "tsx": "^4.21.0",
-        "typescript": "^6.0.2"
+        "tsx": "^4.23.15",
+        "typescript": "^6.0.3"
     },
     "lint-staged": {
         "**/*.{js,ts}": [

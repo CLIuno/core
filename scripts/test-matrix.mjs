@@ -17,7 +17,7 @@
  * Zero dependencies. Requires Node >= 18 (global fetch).
  */
 
-import { spawn, execFileSync } from "node:child_process";
+import { spawn, spawnSync, execFileSync } from "node:child_process";
 import crypto from "node:crypto";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import net from "node:net";
@@ -76,6 +76,34 @@ const sqliteRead = (dir, dbFile, table, col, email) =>
     )
         .toString()
         .trim();
+
+/** A host .NET SDK new enough for the template's TargetFramework, else undefined (→ Docker). */
+const HOST_DOTNET = (() => {
+    let major = 0;
+    try {
+        const csproj = readFileSync(
+            path.join(ROOT, "CLIuno-ASP.NET-template", "BackendASP.NET", "BackendASP.NET.csproj"),
+            "utf8",
+        );
+        major = Number(csproj.match(/<TargetFramework>net(\d+)/)?.[1] ?? 0);
+    } catch {
+        return undefined;
+    }
+    for (const bin of [
+        `${process.env.HOME}/.dotnet/dotnet`,
+        "/usr/bin/dotnet",
+        "/usr/local/bin/dotnet",
+    ]) {
+        if (!existsSync(bin)) continue;
+        const sdks = spawnSync(bin, ["--list-sdks"], { encoding: "utf8" }).stdout ?? "";
+        if (sdks.split("\n").some((l) => Number(l.split(".")[0]) >= major)) return bin;
+    }
+    return undefined;
+})();
+const DOTNET_DOCKER =
+    'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -e DOTNET_CLI_HOME=/tmp ' +
+    '-e NUGET_PACKAGES=/nuget -v "$HOME/.nuget/packages":/nuget -v "$PWD":/app -w /app';
+const DOTNET_IMAGE = "mcr.microsoft.com/dotnet/sdk:10.0";
 
 const BACKENDS = [
     {
@@ -272,11 +300,31 @@ const BACKENDS = [
     {
         id: "aspnet",
         dir: "CLIuno-ASP.NET-template",
-        prepare: [["rm", ["-f", "BackendASP.NET/db.sqlite"]]],
-        start: () => ({
-            cmd: `${process.env.HOME}/.dotnet/dotnet`,
-            args: ["run", "--project", "BackendASP.NET"],
-        }),
+        // Host .NET SDK when present, otherwise the official SDK image (as the host user, with
+        // the NuGet cache on the host) — same idea as the Drogon column.
+        prepare: HOST_DOTNET
+            ? [["rm", ["-f", "BackendASP.NET/db.sqlite"]]]
+            : [
+                  ["docker", ["rm", "-f", "cliuno-aspnet-matrix"]],
+                  ["rm", ["-f", "BackendASP.NET/db.sqlite"]],
+                  [
+                      "bash",
+                      [
+                          "-c",
+                          `mkdir -p "$HOME/.nuget/packages" && ${DOTNET_DOCKER} ${DOTNET_IMAGE} dotnet build BackendASP.NET -v q`,
+                      ],
+                  ],
+              ],
+        start: () =>
+            HOST_DOTNET
+                ? { cmd: HOST_DOTNET, args: ["run", "--project", "BackendASP.NET"] }
+                : {
+                      cmd: "bash",
+                      args: [
+                          "-c",
+                          `exec ${DOTNET_DOCKER} --init --name cliuno-aspnet-matrix -p 127.0.0.1:${PORT}:${PORT} -e PORT=${PORT} -e ASPNETCORE_URLS=http://0.0.0.0:${PORT} ${DOTNET_IMAGE} dotnet run --no-build --project BackendASP.NET`,
+                      ],
+                  },
         env: { PORT: String(PORT) },
         readToken: (dir, email, kind) =>
             execFileSync(
@@ -343,7 +391,10 @@ const BACKENDS = [
             // stray root-owned build/ can exist; remove it before the user-owned build.
             [
                 "bash",
-                ["-lc", 'docker run --rm -v "$PWD":/app -w /app drogonframework/drogon:latest rm -rf build cliuno.db'],
+                [
+                    "-lc",
+                    'docker run --rm -v "$PWD":/app -w /app drogonframework/drogon:latest rm -rf build cliuno.db',
+                ],
             ],
             [
                 "bash",
@@ -378,6 +429,35 @@ const BACKENDS = [
                 .toString()
                 .trim(),
     },
+    {
+        // Rust + Axum: release build, then the binary. sqlx migrations are embedded in
+        // the binary and run on boot, so a fresh matrix-test.db (WAL mode) is all it needs.
+        id: "axum",
+        dir: "CLIuno-Axum-template",
+        prepare: [
+            ["rm", ["-f", "matrix-test.db", "matrix-test.db-wal", "matrix-test.db-shm"]],
+            [
+                existsSync(`${process.env.HOME}/.cargo/bin/cargo`)
+                    ? `${process.env.HOME}/.cargo/bin/cargo`
+                    : "cargo",
+                ["build", "--release", "--quiet"],
+            ],
+        ],
+        start: () => ({ cmd: "target/release/cliuno-axum-template", args: [] }),
+        env: { PORT: String(PORT), DATABASE_URL: "sqlite://matrix-test.db" },
+        readToken: (dir, email, kind) =>
+            execFileSync(
+                "python3",
+                [
+                    "-c",
+                    `import sqlite3,sys;r=sqlite3.connect('matrix-test.db').execute("SELECT ${kind === "reset" ? "reset_token" : "verify_token"} FROM users WHERE email=?",(sys.argv[1],)).fetchone();print((r[0] if r and r[0] else ''),end='')`,
+                    email,
+                ],
+                { cwd: dir },
+            )
+                .toString()
+                .trim(),
+    },
 ];
 
 const FRONTENDS = [
@@ -386,7 +466,8 @@ const FRONTENDS = [
     { id: "solid", dir: "CLIuno-Solid-template", globs: ["src/apis"] },
     { id: "next", dir: "CLIuno-Next-template", globs: ["src/apis"] },
     { id: "svelte", dir: "CLIuno-Svelte-template", globs: ["src/lib/apis"] },
-    { id: "nuxt", dir: "CLIuno-Nuxt-template", globs: ["composables"] },
+    // Nuxt 4 keeps the app in app/; the root path covers older Nuxt 3-style checkouts.
+    { id: "nuxt", dir: "CLIuno-Nuxt-template", globs: ["app/composables", "composables"] },
     { id: "angular", dir: "CLIuno-Angular-template", globs: ["src/app/services"] },
     { id: "flutter", dir: "CLIuno-Flutter-template", globs: ["lib/apis"] },
     { id: "reactnative", dir: "CLIuno-ReactNative-template", globs: ["src/apis"] },
@@ -1129,6 +1210,13 @@ async function main() {
         const eps = extractEndpoints(dir, fe.globs);
         feEndpoints.set(fe.id, eps);
         log(`  ${fe.id.padEnd(8)} expects ${eps.size} endpoints`);
+        if (existsSync(dir) && eps.size === 0) {
+            // An empty API layer means the scan paths are wrong — a PASS would be meaningless.
+            console.error(
+                `  ✘ ${fe.id}: no API calls found under ${fe.globs.join(", ")} — fix its globs`,
+            );
+            process.exitCode = 1;
+        }
     }
 
     const smtp = startSmtpSink(SMTP_PORT);

@@ -22,6 +22,7 @@ const links = new Map([
     ["Flutter", `${url}CLIuno-Flutter-template.git`],
     ["ReactNative", `${url}CLIuno-ReactNative-template.git`],
     ["Drogon", `${url}CLIuno-Drogon-template.git`],
+    ["Axum", `${url}CLIuno-Axum-template.git`],
 ]);
 
 export { links };

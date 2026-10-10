@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - "**"
+  pull_request:
 
 jobs:
   build:
@@ -14,8 +15,21 @@ jobs:
           version: 10
       - uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 22.x
           cache: "pnpm"
 
       - run: pnpm install
-      - run: pnpm lint && pnpm build
+      - run: pnpm lint && pnpm fmt:check
+      - run: pnpm test
+      - run: pnpm build
+
+  plugin:
+    name: Claude Code plugin manifest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - run: npm install -g @anthropic-ai/claude-code
+      - run: claude plugin validate . --strict

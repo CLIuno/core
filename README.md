@@ -43,9 +43,58 @@ pnpm add -g cliuno
 ## Running the app
 
 ```bash
-# run it
+# interactive scaffolder: pick a backend, a frontend / mobile app, a package manager
 $ cliuno
+
+# health check for every supported stack
+$ cliuno --doctor
 ```
+
+## Generating code inside a scaffolded project (`cliuno make:*`)
+
+Every template implements the same demo app on one REST contract. `cliuno make:*` clones
+that pattern for your own resources, in the template's conventions, so you (or an AI
+agent) edit fields and business logic instead of writing boilerplate:
+
+```bash
+cd my-api                                   # any CLIuno template, any sub-folder
+cliuno make                                 # what this stack can generate
+cliuno make:resource Product --fields name:string,price:number,inStock:boolean,notes:text?
+cliuno make:controller Invoice --dry-run    # preview without writing
+cliuno make:model Tag --force               # overwrite an existing file
+```
+
+- `make:resource` generates the whole vertical slice — entity/model + controller/route +
+  validation + test on backends, API client + list/detail pages on frontends — and
+  registers it (router, module, `apis/index`, …). Re-running never duplicates registrations.
+- Single-file kinds (`make:controller`, `make:model`, `make:migration`, `make:service`,
+  `make:validator|request|dto`, `make:test`, `make:api`, `make:store`, `make:page`,
+  `make:component`) delegate to the framework's own CLI when it has one
+  (`php artisan`, `node ace`, `bin/rails g`, `ng g`, `shadcn add`), otherwise render a
+  CLIuno stub.
+- Field types: `string text int number boolean date json`, add `?` for nullable.
+
+## Claude Code / AI agents
+
+The repo ships three skills (`cliuno-scaffold`, `cliuno-make`, `cliuno-matrix`) that
+teach an agent to scaffold from the templates and to run the generators instead of
+hand-writing files. Install them in any of these ways:
+
+```bash
+# 1. as a Claude Code plugin
+claude plugin marketplace add CLIuno/core
+claude plugin install cliuno@cliuno
+#    (inside a session: /plugin marketplace add CLIuno/core, then /plugin install cliuno@cliuno)
+
+# 2. copied into the current project's .claude/skills/ (works offline, no plugin system needed)
+npx cliuno@^2.2 skills install            # --global → ~/.claude/skills
+
+# 3. with the skills.sh CLI
+npx skills add CLIuno/core
+```
+
+`cliuno skills status` tells you whether the skills are installed, outdated, or locally
+modified. Every template's `CLAUDE.md` asks the agent to run it first.
 
 ### Project status
 

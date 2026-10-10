@@ -1,6 +1,8 @@
 ---
 name: cliuno-matrix
-description: Run, debug, and extend the CLIuno frontend×backend compatibility matrix, and consult the shared API contract every template implements. Use this whenever working in the CLIuno workspace on anything API-shaped — adding or changing an endpoint in any backend template (Express, Nest, Fastify, Adonis, Django, FastAPI, Laravel, TallStack, Rails, Spring, ASP.NET, Drogon), changing a frontend's API layer (Vue, React, Solid, Next, Svelte, Nuxt, Angular, Flutter, React Native), adding a new template, investigating why a frontend and backend disagree, or when asked to "run the matrix", "check compatibility", "test the templates against each other", or verify the demo-app contract (auth/users/todos/posts/comments/follows/OTP).
+description: Run, debug, and extend the CLIuno frontend×backend compatibility matrix, and consult the shared API contract every template implements. Use this whenever working in the CLIuno workspace on anything API-shaped — adding or changing an endpoint in any backend template (Express, Nest, Fastify, Adonis, Django, FastAPI, Laravel, TallStack, Rails, Spring, ASP.NET, Drogon, Axum), changing a frontend's API layer (Vue, React, Solid, Next, Svelte, Nuxt, Angular, Flutter, React Native), adding a new template, investigating why a frontend and backend disagree, or when asked to "run the matrix", "check compatibility", "test the templates against each other", or verify the demo-app contract (auth/users/todos/posts/comments/follows/OTP).
+metadata:
+    version: 2.1.1
 ---
 
 # CLIuno compatibility matrix
@@ -20,7 +22,7 @@ adding or changing any endpoint. Per-backend boot/DB/test details are in
 
 ```bash
 cd core
-pnpm test:matrix                      # full board: 9 frontends × 12 backends
+pnpm test:matrix                      # full board: 9 frontends × 13 backends
 node scripts/test-matrix.mjs --backends express            # one backend
 node scripts/test-matrix.mjs --backends rails --frontends vue --verbose
 ```
@@ -76,6 +78,8 @@ Adding an endpoint end-to-end:
 Adding a new backend template: add a registry entry in `BACKENDS` (dir, prepare, start,
 env, and `activateUser`/`readToken` hooks if it gates email verification or stores
 one-time tokens), implement the whole contract, and run its column until `flow` is full.
+Then give it a generator module in `core/src/generators/stacks/<id>.ts` so
+`cliuno make:resource` works there too (`node scripts/test-generators.mjs --only <id>`).
 
 ## Gotchas that have burned this workspace before
 
