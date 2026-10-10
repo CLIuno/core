@@ -48,11 +48,13 @@ jobs:
       # with no pending release is a no-op instead of re-publishing the current version.
       # Auth is via OIDC (configure the trusted publisher for `cliuno` on npmjs.com);
       # no NPM_TOKEN secret is required.
+      # changesets/action v2 is the release line for @changesets/cli v3: it reads what was
+      # published from the CHANGESETS_OUTPUT file, which `changeset publish` inside
+      # ci-publish.sh writes. v1 parsed CLI v2's "New tag:" stdout, which v3 no longer prints,
+      # so it published to npm but skipped the git tag and GitHub release.
       - name: Create Release Pull Request or Publish
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@v2
         with:
-          version: pnpm changeset:version
-          publish: bash scripts/ci-publish.sh
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          version-script: pnpm changeset:version
+          publish-script: bash scripts/ci-publish.sh
