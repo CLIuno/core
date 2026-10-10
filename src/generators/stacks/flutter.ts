@@ -98,7 +98,7 @@ function api(ctx: Ctx): FileSpec {
 
 import 'http.dart';
 
-/// \`/${route}\` — payload: {${payload}}.
+/// \`/${route}\` — payload: \`{${payload}}\`.
 class ${P}Api {
   Future<Response<dynamic>> get${names.plural.pascal}() => http.get('/${route}');
 
