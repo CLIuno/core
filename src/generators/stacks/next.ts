@@ -25,7 +25,7 @@ const INIT: Record<FieldType, string> = {
     number: "0",
     boolean: "false",
     date: "''",
-    json: "{}",
+    json: "'{}'",
 };
 
 function tsType(f: Field): string {
@@ -72,7 +72,7 @@ function formState(fields: Field[]): string {
     return fields
         .map(
             (f) =>
-                `  const [${f.camel}, set${f.pascal}] = useState<${TS[f.type]}>(${INIT[f.type]})`,
+                `  const [${f.camel}, set${f.pascal}] = useState<${f.type === "json" ? "string" : TS[f.type]}>(${INIT[f.type]})`,
         )
         .join("\n");
 }
@@ -81,6 +81,12 @@ function formState(fields: Field[]): string {
 function payload(fields: Field[]): string {
     return fields
         .map((f) => {
+            if (f.type === "json") {
+                // edited as raw text; parsed on submit
+                return f.nullable
+                    ? `${f.camel}: ${f.camel}.trim() ? JSON.parse(${f.camel}) : null`
+                    : `${f.camel}: JSON.parse(${f.camel} || '{}')`;
+            }
             const stringish = f.type === "string" || f.type === "text" || f.type === "date";
             return f.nullable && stringish ? `${f.camel}: ${f.camel} || null` : f.camel;
         })
@@ -116,14 +122,9 @@ function formInput(f: Field): string {
               <Label htmlFor="${id}">${f.pascal} (JSON)</Label>
               <Textarea
                 id="${id}"
-                value={JSON.stringify(${f.camel})}
-                onChange={(e) => {
-                  try {
-                    set${f.pascal}(JSON.parse(e.target.value))
-                  } catch {
-                    // keep typing
-                  }
-                }}
+                value={${f.camel}}
+                onChange={(e) => set${f.pascal}(e.target.value)}
+                placeholder='{"key": "value"}'
                 rows={3}
               />
             </div>`;

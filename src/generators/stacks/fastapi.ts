@@ -38,18 +38,6 @@ const PY: Record<FieldType, string> = {
     json: "dict",
 };
 
-/** Routers the template registers in src/app.py, in isort order — used to slot the new import. */
-const KNOWN_ROUTERS = [
-    "auth",
-    "comments",
-    "follows",
-    "posts",
-    "roles",
-    "todos",
-    "uploads",
-    "users",
-];
-
 function column(f: Field): string {
     const py = f.nullable ? `${PY[f.type]} | None` : PY[f.type];
     const opts = f.nullable
@@ -340,17 +328,28 @@ ${missingRequired}
     };
 }
 
+/** Merge `mod` into the `from src.routers import …` statement, kept sorted (ruff isort) and wrapped like ruff format. */
+export function mergeRouterImport(statement: string, mod: string): string {
+    const body = statement.replace(/^from src\.routers import\s*/, "").replace(/[()]/g, "");
+    const names = [
+        ...new Set([...body.split(",").map((n) => n.trim()), mod].filter(Boolean)),
+    ].sort();
+    const oneLine = `from src.routers import ${names.join(", ")}`;
+    if (oneLine.length <= 100) return oneLine;
+    return `from src.routers import (\n${names.map((n) => `    ${n},`).join("\n")}\n)`;
+}
+
 function register(ctx: Ctx): Patch[] {
     const mod = ctx.names.plural.snake;
-    const before = KNOWN_ROUTERS.filter((name) => name < mod);
     return [
         {
             path: "src/app.py",
-            // Slot the module into the existing `from src.routers import …` line in isort order.
-            anchor: `from src.routers import ${before.join(", ")}`,
+            // Matches both the one-line and the parenthesised form, however many routers came before.
+            anchor: /^from src\.routers import (?:\([^)]*\)|.+)$/m,
             where: "after",
-            insert: before.length > 0 ? `, ${mod}` : `${mod}, `,
-            skipIf: `${mod}.router`,
+            insert: `from src.routers import ${mod}`,
+            skipIf: `__never__${mod}`,
+            replace: (statement) => mergeRouterImport(statement, mod),
             describe: `import the ${mod} router`,
         },
         {
@@ -377,7 +376,6 @@ export const fastapi: Generator = {
             patches: register,
             notes: (ctx) => [
                 `Tables come from Base.metadata.create_all at startup — restart the dev server and the ${ctx.names.plural.snake} table appears.`,
-                "If ruff reports I001 in src/app.py after several generated routers, run: uv run ruff check --fix src/app.py",
             ],
         },
         model: { describe: "SQLAlchemy model in src/models/", files: (ctx) => [model(ctx)] },

@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { Ctx, FileSpec, Generator, NativeCall, Patch } from "../types";
 import type { Field, FieldType } from "../fields";
 import { oxfmt } from "./shared";
@@ -83,10 +85,24 @@ function migrationColumn(f: Field): string {
     return line;
 }
 
+/** Reuse an existing create_<plural>_table migration so a second run is a no-op. */
+function migrationPath(ctx: Ctx): string {
+    const suffix = `_create_${ctx.names.plural.snake}_table.ts`;
+    try {
+        const existing = fs
+            .readdirSync(path.join(ctx.cwd, "database", "migrations"))
+            .find((f) => f.endsWith(suffix));
+        if (existing) return `database/migrations/${existing}`;
+    } catch {
+        // no migrations dir (dry-run outside a checkout)
+    }
+    return `database/migrations/${Date.now()}${suffix}`;
+}
+
 function migration(ctx: Ctx): FileSpec {
     const { names, fields } = ctx;
     return {
-        path: `database/migrations/${Date.now()}_create_${names.plural.snake}_table.ts`,
+        path: migrationPath(ctx),
         content: `import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {

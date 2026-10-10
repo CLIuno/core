@@ -116,8 +116,12 @@ ${indent}    db->execSqlSync("UPDATE ${table} SET ${f.snake}=? WHERE id=? AND us
 ${indent}                    ${bind(f)}, id, ${uid});`;
 }
 
+function present(f: Field): string {
+    return f.camel === f.snake ? `has(b, "${f.camel}")` : `has(b, "${f.camel}", "${f.snake}")`;
+}
+
 function clearStatement(f: Field, table: string, indent: string, uid: string): string {
-    return `${indent}else if (${read(f)}.isNull())
+    return `${indent}else if (${present(f)} && ${read(f)}.isNull())
 ${indent}    db->execSqlSync("UPDATE ${table} SET ${f.snake}=NULL WHERE id=? AND user_id=?", id, ${uid});`;
 }
 
@@ -182,7 +186,12 @@ Json::Value parseJson(const std::string &text)
     return out;
 }`);
     if (optional.length > 0)
-        helpers.push(`// Nullable columns: set when the key is present, clear when it is explicitly null.
+        helpers.push(`// A missing key and an explicit null both read as null; only an explicit null clears a column.
+bool has(const Json::Value &b, const char *camel, const char *snake = nullptr)
+{
+    return b.isMember(camel) || (snake != nullptr && b.isMember(snake));
+}`);
+    helpers.push(`// Nullable columns: set when the key is present, clear when it is explicitly null.
 void applyOptional(const orm::DbClientPtr &db, const Json::Value &b, int64_t id, int64_t uid)
 {
 ${optional.map((f) => `${setStatement(f, table, "    ", "uid")}\n${clearStatement(f, table, "    ", "uid")}`).join("\n")}

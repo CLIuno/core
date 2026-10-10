@@ -63,9 +63,11 @@ function formState(fields: Field[]): string {
                 number: "0",
                 boolean: "false",
                 date: "''",
-                json: "{}",
+                json: "'{}'",
             };
-            return `  const [${f.camel}, set${f.pascal}] = useState<${TS[f.type]}>(${init[f.type]})`;
+            // JSON is edited as raw text and parsed on submit
+            const stateType = f.type === "json" ? "string" : TS[f.type];
+            return `  const [${f.camel}, set${f.pascal}] = useState<${stateType}>(${init[f.type]})`;
         })
         .join("\n");
 }
@@ -98,14 +100,9 @@ function formInput(f: Field): string {
               <Label htmlFor="${id}">${f.pascal} (JSON)</Label>
               <Textarea
                 id="${id}"
-                value={JSON.stringify(${f.camel})}
-                onChange={(e) => {
-                  try {
-                    set${f.pascal}(JSON.parse(e.target.value))
-                  } catch {
-                    // keep typing
-                  }
-                }}
+                value={${f.camel}}
+                onChange={(e) => set${f.pascal}(e.target.value)}
+                placeholder='{"key": "value"}'
                 rows={3}
               />
             </div>`;
@@ -139,7 +136,14 @@ function listView(ctx: Ctx): FileSpec {
     const P = names.pascal;
     const label = labelField(fields);
     const others = fields.filter((f) => f !== label);
-    const payload = fields.map((f) => f.camel).join(", ");
+    const payload = fields
+        .map((f) => {
+            if (f.type !== "json") return f.camel;
+            return f.nullable
+                ? `${f.camel}: ${f.camel}.trim() ? JSON.parse(${f.camel}) : null`
+                : `${f.camel}: JSON.parse(${f.camel} || '{}')`;
+        })
+        .join(", ");
     const reset = fields
         .map((f) => {
             const init: Record<FieldType, string> = {
@@ -149,7 +153,7 @@ function listView(ctx: Ctx): FileSpec {
                 number: "0",
                 boolean: "false",
                 date: "''",
-                json: "{}",
+                json: "'{}'",
             };
             return `      set${f.pascal}(${init[f.type]})`;
         })

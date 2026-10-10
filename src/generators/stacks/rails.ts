@@ -174,6 +174,7 @@ export function controller(ctx: Ctx): FileSpec {
         content: `class Api::V1::${Pp}Controller < ApplicationController
   before_action :authenticate_user!
   before_action :set_${s}, only: %i[show update destroy]
+  before_action :authorize_owner!, only: %i[update destroy]
 
   # GET /api/v1/${kp}
   def index
@@ -223,6 +224,12 @@ export function controller(ctx: Ctx): FileSpec {
   def set_${s}
     @${s} = ${P}.find_by(id: params[:id])
     render_not_found("${title} not found") unless @${s}
+  end
+
+  def authorize_owner!
+    return if @${s}.user_id == current_user.id
+
+    render_forbidden("You can only modify your own ${names.plural.title.toLowerCase()}")
   end
 
   def ${s}_params
