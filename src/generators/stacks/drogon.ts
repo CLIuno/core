@@ -238,6 +238,8 @@ class ${C} : public HttpController<${C}>
 
 namespace
 {
+${helpers.join("\n")}
+
 Json::Value ${one}Json(const orm::Row &r)
 {
     Json::Value v(Json::objectValue);
@@ -247,7 +249,6 @@ ${fields.map((f) => `    v["${f.snake}"] = ${column(f)};`).join("\n")}
     v["created_at"] = r["created_at"].isNull() ? "" : r["created_at"].as<std::string>();
     return v;
 }
-${helpers.join("\n")}
 } // namespace
 
 void ${C}::list(const HttpRequestPtr &req,
