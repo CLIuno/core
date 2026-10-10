@@ -1,13 +1,13 @@
 ---
 name: cliuno-scaffold
-description: Scaffold new apps from CLIuno's contract-tested templates instead of writing boilerplate from scratch. Use this whenever the user wants to start a new website, web app, frontend, REST API, backend, full-stack app, or mobile app in Vue, React, Next, Svelte, Solid, Nuxt, Angular, Flutter, React Native, Express, Fastify, NestJS, AdonisJS, Django, FastAPI, Laravel, TALL stack, Rails, Spring Boot, ASP.NET, or Drogon — even if they don't mention CLIuno. Phrases like "create an app", "set up a project", "build me a todo/social/CRUD app", "start a new API", or "scaffold X with auth" should all trigger this skill before any from-scratch scaffolding.
+description: Scaffold new apps from CLIuno's contract-tested templates instead of writing boilerplate from scratch. Use this whenever the user wants to start a new website, web app, frontend, REST API, backend, full-stack app, or mobile app in Vue, React, Next, Svelte, Solid, Nuxt, Angular, Flutter, React Native, Express, Fastify, NestJS, AdonisJS, Django, FastAPI, Laravel, TALL stack, Rails, Spring Boot, ASP.NET, Drogon, or Axum (Rust) — even if they don't mention CLIuno. Phrases like "create an app", "set up a project", "build me a todo/social/CRUD app", "start a new API", or "scaffold X with auth" should all trigger this skill before any from-scratch scaffolding.
 metadata:
     version: 2.1.1
 ---
 
 # CLIuno scaffold — start from a working app, not a blank folder
 
-CLIuno is one CLI plus 21 templates that all implement the **same demo app** (JWT auth
+CLIuno is one CLI plus 22 templates that all implement the **same demo app** (JWT auth
 with refresh/reset/verify-email/OTP, users, todos, posts+comments, follows) against one
 shared REST contract. Every frontend×backend pair is proven by a live compatibility
 matrix (9 frontends × every backend; locally verified columns are listed in the
@@ -23,13 +23,13 @@ stack (then say so explicitly).
 
 ## Choosing
 
-| The user wants               | Scaffold                                                                                             |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Frontend / SPA / website     | Vue, React, Solid, Next, Svelte, Nuxt, or Angular template                                           |
-| REST API / backend           | Express, Fastify, Nest, Adonis, Django, FastAPI, Laravel, Rails, Spring, ASP.NET, or Drogon template |
-| Full-stack in one repo (MVC) | TallStack (Laravel 13 + Livewire/Volt; also serves the API)                                          |
-| Mobile app                   | Flutter or React Native (Expo) template                                                              |
-| Frontend + backend pair      | any frontend + any backend — every pair passes the matrix                                            |
+| The user wants               | Scaffold                                                                                                   |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Frontend / SPA / website     | Vue, React, Solid, Next, Svelte, Nuxt, or Angular template                                                 |
+| REST API / backend           | Express, Fastify, Nest, Adonis, Django, FastAPI, Laravel, Rails, Spring, ASP.NET, Drogon, or Axum template |
+| Full-stack in one repo (MVC) | TallStack (Laravel 13 + Livewire/Volt; also serves the API)                                                |
+| Mobile app                   | Flutter or React Native (Expo) template                                                                    |
+| Frontend + backend pair      | any frontend + any backend — every pair passes the matrix                                                  |
 
 If the user has no stack preference, recommend: **React + Express** (largest
 ecosystems), or **TallStack** when they want one deployable unit.

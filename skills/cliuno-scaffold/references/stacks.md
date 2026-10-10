@@ -10,15 +10,15 @@ Base UI for the React family, the framework's equivalent elsewhere — with Tail
 CSS-variable theming (`:root` + `.dark`) and lucide icons. UI components are vendored
 into the repo (you own the code), not imported from a kit package.
 
-| Template | Install/dev                   | Verify                                        | UI kit (primitives)                                     | Add a component                                      |
-| -------- | ----------------------------- | --------------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------- |
-| React    | `pnpm i` · `pnpm dev`         | `tsc -b` · `oxlint .` · `pnpm build`          | shadcn/ui (**Base UI**) in `src/components/ui`          | `npx shadcn@latest add <name> -y`                    |
-| Next     | `pnpm i` · `pnpm dev` (:5002) | `pnpm type-check` · `oxlint .` · `pnpm build` | shadcn/ui (**Base UI**) in `src/components/ui`          | `npx shadcn@latest add <name> -y`                    |
-| Vue      | `pnpm i` · `pnpm dev`         | `vue-tsc --build` · `oxlint .` · `pnpm build` | shadcn-vue (reka-ui) in `src/components/ui`             | `npx shadcn-vue@latest add <name>`                   |
-| Nuxt     | `pnpm i` · `pnpm dev`         | `nuxi typecheck` · `oxlint .` · `pnpm build`  | shadcn-vue via shadcn-nuxt (reka-ui) in `components/ui` | `npx shadcn-vue@latest add <name>`                   |
-| Svelte   | `pnpm i` · `pnpm dev` (:5000) | `pnpm check` · `oxlint .` · `pnpm build`      | shadcn-svelte (bits-ui) in `src/lib/components/ui`      | `npx shadcn-svelte@latest add <name>`                |
-| Solid    | `pnpm i` · `pnpm dev`         | `tsc --noEmit` · `oxlint .` · `pnpm build`    | shadcn-style on Kobalte in `src/components/ui`          | vendored — copy an existing component as the pattern |
-| Angular  | `pnpm i` · `pnpm start`       | `ng build` · `oxlint .`                       | spartan-ng helm (Brain)                                 | `ng g @spartan-ng/cli:ui <name>`                     |
+| Template | Install/dev                   | Verify                                        | UI kit (primitives)                                         | Add a component                                      |
+| -------- | ----------------------------- | --------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------- |
+| React    | `pnpm i` · `pnpm dev`         | `tsc -b` · `oxlint .` · `pnpm build`          | shadcn/ui (**Base UI**) in `src/components/ui`              | `npx shadcn@latest add <name> -y`                    |
+| Next     | `pnpm i` · `pnpm dev` (:5002) | `pnpm type-check` · `oxlint .` · `pnpm build` | shadcn/ui (**Base UI**) in `src/components/ui`              | `npx shadcn@latest add <name> -y`                    |
+| Vue      | `pnpm i` · `pnpm dev`         | `vue-tsc --build` · `oxlint .` · `pnpm build` | shadcn-vue (reka-ui) in `src/components/ui`                 | `npx shadcn-vue@latest add <name>`                   |
+| Nuxt     | `pnpm i` · `pnpm dev`         | `pnpm typecheck` · `oxlint .` · `pnpm build`  | shadcn-vue via shadcn-nuxt (reka-ui) in `app/components/ui` | `npx shadcn-vue@latest add <name>`                   |
+| Svelte   | `pnpm i` · `pnpm dev` (:5000) | `pnpm check` · `oxlint .` · `pnpm build`      | shadcn-svelte (bits-ui) in `src/lib/components/ui`          | `npx shadcn-svelte@latest add <name>`                |
+| Solid    | `pnpm i` · `pnpm dev`         | `tsc --noEmit` · `oxlint .` · `pnpm build`    | shadcn-style on Kobalte in `src/components/ui`              | vendored — copy an existing component as the pattern |
+| Angular  | `pnpm i` · `pnpm start`       | `ng build` · `oxlint .`                       | spartan-ng helm (Brain)                                     | `ng g @spartan-ng/cli:ui <name>`                     |
 
 Frontend → backend base URL env: Vite apps `VITE_BACKEND_URL`; Next
 `NEXT_PUBLIC_API_BASE`; Nuxt via runtime config; Angular environments file.
@@ -40,20 +40,21 @@ Material 3, React Native uses plain StyleSheet + expo-router.
 All serve the same contract at `/api/v1` on SQLite out of the box; first registration
 creates the `user` role (no seeding needed).
 
-| Template  | Install                                      | Dev                                                      | Verify                             |
-| --------- | -------------------------------------------- | -------------------------------------------------------- | ---------------------------------- |
-| Express   | `pnpm i`                                     | `pnpm dev`                                               | `tsc --noEmit` · `oxlint .`        |
-| Fastify   | `pnpm i`                                     | `pnpm dev`                                               | `tsc --noEmit` · `oxlint .`        |
-| Nest      | `pnpm i`                                     | `pnpm start:dev`                                         | `jest` · `nest build` · `oxlint .` |
-| Adonis    | `pnpm i`                                     | `node ace migration:run && node ace serve --hmr`         | `pnpm typecheck` · `oxlint .`      |
-| Django    | `uv sync`                                    | `uv run manage.py migrate && uv run manage.py runserver` | `manage.py test` · `ruff check .`  |
-| FastAPI   | `uv sync`                                    | `uv run uvicorn src.app:app --reload`                    | `pytest` · `ruff check .`          |
-| Laravel   | `composer install`                           | `php artisan migrate && php artisan serve`               | `artisan test` · `pint --test`     |
-| TallStack | `composer install && npm i && npm run build` | `php artisan migrate && php artisan serve`               | `artisan test` · `pint --test`     |
-| Rails     | `bundle install`                             | `bin/rails db:prepare && bin/rails server`               | `rails test` · `rubocop`           |
-| Spring    | —                                            | `./mvnw spring-boot:run`                                 | `./mvnw test`                      |
-| ASP.NET   | —                                            | `dotnet run --project BackendASP.NET`                    | `dotnet build` (0 warnings)        |
-| Drogon    | `cmake -S . -B build && cmake --build build` | `./build/cliuno_drogon`                                  | `cmake --build build` (0 warnings) |
+| Template  | Install                                      | Dev                                                      | Verify                                                             |
+| --------- | -------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------ |
+| Express   | `pnpm i`                                     | `pnpm dev`                                               | `tsc --noEmit` · `oxlint .`                                        |
+| Fastify   | `pnpm i`                                     | `pnpm dev`                                               | `tsc --noEmit` · `oxlint .`                                        |
+| Nest      | `pnpm i`                                     | `pnpm start:dev`                                         | `jest` · `nest build` · `oxlint .`                                 |
+| Adonis    | `pnpm i`                                     | `node ace migration:run && node ace serve --hmr`         | `pnpm typecheck` · `oxlint .`                                      |
+| Django    | `uv sync`                                    | `uv run manage.py migrate && uv run manage.py runserver` | `manage.py test` · `ruff check .`                                  |
+| FastAPI   | `uv sync`                                    | `uv run uvicorn src.app:app --reload`                    | `pytest` · `ruff check .`                                          |
+| Laravel   | `composer install`                           | `php artisan migrate && php artisan serve`               | `artisan test` · `pint --test`                                     |
+| TallStack | `composer install && npm i && npm run build` | `php artisan migrate && php artisan serve`               | `artisan test` · `pint --test`                                     |
+| Rails     | `bundle install`                             | `bin/rails db:prepare && bin/rails server`               | `rails test` · `rubocop`                                           |
+| Spring    | —                                            | `./mvnw spring-boot:run`                                 | `./mvnw test`                                                      |
+| ASP.NET   | —                                            | `dotnet run --project BackendASP.NET`                    | `dotnet build` (0 warnings)                                        |
+| Drogon    | `cmake -S . -B build && cmake --build build` | `./build/cliuno_drogon`                                  | `cmake --build build` (0 warnings)                                 |
+| Axum      | `cargo build`                                | `cargo run`                                              | `cargo test` · `cargo clippy -- -D warnings` · `cargo fmt --check` |
 
 Python templates: `unset VIRTUAL_ENV` first if a foreign venv is active.
 
