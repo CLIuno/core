@@ -72,8 +72,9 @@ export function parseFields(spec?: string): Field[] {
     for (const chunk of source.split(",")) {
         const item = chunk.trim();
         if (!item) continue;
-        const [rawName, rawType] = item.split(":");
-        if (!rawName || !rawType) {
+        const parts = item.split(":");
+        const [rawName, rawType] = parts;
+        if (parts.length !== 2 || !rawName || !rawType) {
             throw new Error(
                 `Invalid field "${item}": expected name:type (e.g. title:string). Valid types: ${FIELD_TYPES.join(", ")}.`,
             );

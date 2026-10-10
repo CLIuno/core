@@ -50,3 +50,7 @@ test("case variants of a field", () => {
     );
     assert.equal(labelField(parseFields("done:boolean,name:string")).name, "name");
 });
+
+test("an entry with more than one colon is rejected", () => {
+    assert.throws(() => parseFields("price:number:extra"), /expected name:type/);
+});

@@ -40,6 +40,8 @@ export interface Patch {
     where: "before" | "after";
     /** When this text is already in the file the patch is skipped (idempotency). */
     skipIf: string;
+    /** Rewrite the matched anchor text instead of inserting next to it (`insert` is then only shown in notes). */
+    replace?: (matched: string) => string;
     describe: string;
 }
 

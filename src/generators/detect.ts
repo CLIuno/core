@@ -93,9 +93,13 @@ function csprojIsWeb(dir: string): boolean {
     } catch {
         return false;
     }
-    return candidates.some((file) =>
-        fs.readFileSync(file, "utf8").includes("Microsoft.NET.Sdk.Web"),
-    );
+    return candidates.some((file) => {
+        try {
+            return fs.readFileSync(file, "utf8").includes("Microsoft.NET.Sdk.Web");
+        } catch {
+            return false; // dangling symlink or unreadable file
+        }
+    });
 }
 
 const dep = (dir: string, name: string) => Boolean(pkgDeps(dir)?.[name]);

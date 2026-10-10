@@ -45,9 +45,13 @@ export async function runScaffold(): Promise<number> {
             await handleRestApi();
         }
         return 0;
-    } catch {
-        console.log(chalk.yellow("\n👋 Bye!"));
-        return 0;
+    } catch (error) {
+        if (error instanceof Error && error.name === "ExitPromptError") {
+            console.log(chalk.yellow("\n👋 Bye!"));
+            return 0;
+        }
+        console.error(chalk.red(`\n✘ ${error instanceof Error ? error.message : String(error)}`));
+        return 1;
     }
 }
 

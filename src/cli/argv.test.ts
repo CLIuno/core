@@ -36,3 +36,15 @@ test("--flag=value form", () => {
     const parsed = parseArgv(["make:model", "Tag", "--fields=name:string"]);
     assert.equal(parsed.flags.fields, "name:string");
 });
+
+test("unknown or mistyped flags never swallow the resource name", () => {
+    for (const argv of [
+        ["make:resource", "--verbose", "Post"],
+        ["make:resource", "--dryrun", "Post"],
+        ["make:resource", "--force", "Post"],
+    ]) {
+        const parsed = parseArgv(argv);
+        assert.equal(parsed.name, "Post", argv.join(" "));
+    }
+    assert.equal(parseArgv(["make:resource", "Post", "--fields", "a:int"]).flags.fields, "a:int");
+});

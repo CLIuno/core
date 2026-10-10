@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { apply, applyPatch, plan, type Io } from "./engine";
+import { apply, applyPatch, plan, quoteForCmd, type Io } from "./engine";
 import type { Ctx, Generator, Patch } from "./types";
 import { buildNames } from "./names";
 import { parseFields } from "./fields";
@@ -155,4 +155,27 @@ test("formatter runs on written + patched files when its binary exists", async (
     const r2 = await apply(plan(formatted, "resource", ctx(), none), ctx(), none, formatted);
     assert.equal(r2.formatted, undefined);
     assert.deepEqual(none.ran, []);
+});
+
+test("replace patches rewrite the matched text and are idempotent", () => {
+    const merge = (m: string) => (m.includes("b") ? m : `${m}, b`);
+    const p: Patch = {
+        path: "x",
+        anchor: /^import .+$/m,
+        insert: "b",
+        where: "after",
+        skipIf: "__never__",
+        replace: merge,
+        describe: "merge",
+    };
+    const once = applyPatch("import a\nrest", p);
+    assert.equal(once.text, "import a, b\nrest");
+    assert.equal(applyPatch(once.text, p).status, "skipped");
+});
+
+test("cmd.exe quoting keeps names with spaces and metacharacters as one argument", () => {
+    assert.equal(quoteForCmd("make:model"), "make:model");
+    assert.equal(quoteForCmd("Blog Post"), '"Blog Post"');
+    assert.equal(quoteForCmd('a"b&c'), '"a""b&c"');
+    assert.equal(quoteForCmd(""), '""');
 });

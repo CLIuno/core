@@ -7,16 +7,8 @@ export interface ParsedArgv {
     positional: string[];
 }
 
-const BOOLEAN_FLAGS = new Set([
-    "force",
-    "dry-run",
-    "global",
-    "help",
-    "h",
-    "version",
-    "v",
-    "doctor",
-]);
+/** Flags that take a value; every other flag is boolean so it can never swallow the resource name. */
+const VALUE_FLAGS = new Set(["fields"]);
 
 function flagName(raw: string): string {
     return raw.replace(/^--?/, "");
@@ -39,7 +31,7 @@ export function parseArgv(argv: string[]): ParsedArgv {
         }
         const name = flagName(arg);
         const next = argv[i + 1];
-        if (BOOLEAN_FLAGS.has(name) || next === undefined || next.startsWith("-")) {
+        if (!VALUE_FLAGS.has(name) || next === undefined || next.startsWith("-")) {
             flags[name] = true;
         } else {
             flags[name] = next;

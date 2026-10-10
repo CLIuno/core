@@ -26,14 +26,25 @@ export const realIo: Io = {
         return result.status === 0;
     },
     run: (call, cwd) => {
-        const result = spawnSync(call.bin, call.args, {
-            cwd,
-            stdio: call.quiet ? "ignore" : "inherit",
-            shell: process.platform === "win32",
-        });
+        // .cmd shims (npx, node_modules/.bin/*) need a shell on Windows; quote every argument for cmd.exe.
+        const windows = process.platform === "win32";
+        const result = windows
+            ? spawnSync([call.bin, ...call.args].map(quoteForCmd).join(" "), {
+                  cwd,
+                  stdio: call.quiet ? "ignore" : "inherit",
+                  shell: true,
+              })
+            : spawnSync(call.bin, call.args, { cwd, stdio: call.quiet ? "ignore" : "inherit" });
         return result.status ?? 1;
     },
 };
+
+/** Quote one argument for cmd.exe so spaces and metacharacters are passed through literally. */
+export function quoteForCmd(arg: string): string {
+    if (arg === "") return '""';
+    if (!/[\s"&|<>^%()!,;=]/.test(arg)) return arg;
+    return `"${arg.replace(/"/g, '""')}"`;
+}
 
 export class UnsupportedKindError extends Error {
     constructor(
@@ -107,6 +118,15 @@ export function applyPatch(
         }
     }
     if (index === -1) return { text: source, status: "anchor-missing" };
+    if (patch.replace) {
+        const matched = source.slice(index, index + length);
+        const replaced = patch.replace(matched);
+        if (replaced === matched) return { text: source, status: "skipped" };
+        return {
+            text: source.slice(0, index) + replaced + source.slice(index + length),
+            status: "applied",
+        };
+    }
     const at = patch.where === "after" ? index + length : index;
     return { text: source.slice(0, at) + patch.insert + source.slice(at), status: "applied" };
 }
