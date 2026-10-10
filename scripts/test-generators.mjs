@@ -6,6 +6,7 @@
 //   node scripts/test-generators.mjs --only express,react
 //   node scripts/test-generators.mjs --keep          # leave the worktrees for inspection
 //   node scripts/test-generators.mjs --fields name:string,price:number
+//   node scripts/test-generators.mjs --cli dist-nest/app.js   # use a separate build output
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
@@ -14,7 +15,6 @@ import { fileURLToPath } from "node:url";
 
 const core = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const workspace = path.resolve(core, "..");
-const cli = path.join(core, "dist", "app.js");
 
 const args = process.argv.slice(2);
 const flag = (name) => {
@@ -25,6 +25,8 @@ const only = typeof flag("only") === "string" ? flag("only").split(",") : null;
 const keep = flag("keep") === true;
 const fields = typeof flag("fields") === "string" ? flag("fields") : "name:string,price:number,done:boolean,due:date?";
 const scratch = typeof flag("scratch") === "string" ? flag("scratch") : path.join(os.tmpdir(), "cliuno-gen");
+// --cli <path> lets parallel workers use their own build (e.g. `pnpm exec tsup --out-dir dist-x`).
+const cli = path.resolve(core, typeof flag("cli") === "string" ? flag("cli") : path.join("dist", "app.js"));
 
 const has = (bin) => spawnSync("which", [bin], { stdio: "ignore" }).status === 0;
 const pnpm = ["pnpm install --prefer-offline"];

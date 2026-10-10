@@ -105,3 +105,4 @@ dist
 .tern-port
 matrix-report.json
 .claude/skills/cliuno-matrix-workspace/
+dist-*/
