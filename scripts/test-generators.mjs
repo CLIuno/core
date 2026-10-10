@@ -23,43 +23,186 @@ const flag = (name) => {
 };
 const only = typeof flag("only") === "string" ? flag("only").split(",") : null;
 const keep = flag("keep") === true;
-const fields = typeof flag("fields") === "string" ? flag("fields") : "name:string,price:number,done:boolean,due:date?";
-const scratch = typeof flag("scratch") === "string" ? flag("scratch") : path.join(os.tmpdir(), "cliuno-gen");
+const fields =
+    typeof flag("fields") === "string"
+        ? flag("fields")
+        : "name:string,price:number,done:boolean,due:date?";
+const scratch =
+    typeof flag("scratch") === "string" ? flag("scratch") : path.join(os.tmpdir(), "cliuno-gen");
 // --cli <path> lets parallel workers use their own build (e.g. `pnpm exec tsup --out-dir dist-x`).
-const cli = path.resolve(core, typeof flag("cli") === "string" ? flag("cli") : path.join("dist", "app.js"));
+const cli = path.resolve(
+    core,
+    typeof flag("cli") === "string" ? flag("cli") : path.join("dist", "app.js"),
+);
 
 const has = (bin) => spawnSync("which", [bin], { stdio: "ignore" }).status === 0;
 const pnpm = ["pnpm install --prefer-offline"];
 
 /** id → { dir, needs: [binaries], prepare: [cmds], check: [cmds] } — mirrors each template's CI. */
 const TEMPLATES = {
-    express: { dir: "CLIuno-Express-template", needs: ["pnpm"], prepare: pnpm, check: ["pnpm type-check", "pnpm lint", "pnpm build", "npx jest --passWithNoTests src/__tests__/widget.spec.ts"] },
-    fastify: { dir: "CLIuno-Fastify-template", needs: ["pnpm"], prepare: pnpm, check: ["pnpm type-check", "pnpm lint", "pnpm build"] },
-    nest: { dir: "CLIuno-Nest-template", needs: ["pnpm"], prepare: pnpm, check: ["pnpm build", "pnpm lint", "pnpm test"] },
-    adonis: { dir: "CLIuno-Adonis-template", needs: ["pnpm"], prepare: pnpm, check: ["pnpm typecheck", "pnpm lint"] },
-    django: { dir: "CLIuno-Django-template", needs: ["uv"], prepare: ["uv sync"], check: ["uv run python manage.py makemigrations", "uv run python manage.py test", "uv run ruff check ."] },
-    fastapi: { dir: "CLIuno-FastAPI-template", needs: ["uv"], prepare: ["uv sync --extra dev"], check: ["uv run pytest tests/ -q", "uv run ruff check ."] },
-    laravel: { dir: "CLIuno-Laravel-template", needs: ["php", "composer"], prepare: ["composer install --prefer-dist --no-interaction --quiet", "cp -n .env.example .env", "php artisan key:generate --quiet", "touch database/database.sqlite"], check: ["php artisan test", "vendor/bin/pint --test"] },
-    tallstack: { dir: "CLIuno-TallStack-template", needs: ["php", "composer", "npm"], prepare: ["composer install --prefer-dist --no-interaction --quiet", "cp -n .env.example .env", "php artisan key:generate --quiet", "touch database/database.sqlite", "npm ci --silent", "npm run build --silent"], check: ["php artisan test", "vendor/bin/pint --test"] },
-    rails: { dir: "CLIuno-Rails-template", needs: ["ruby", "bundle"], prepare: ["bundle install --quiet", "bin/rails db:prepare"], check: ["bin/rails db:migrate", "bin/rails test", "bin/rubocop"] },
-    spring: { dir: "CLIuno-Spring-template", needs: ["java"], prepare: [], check: ["./mvnw -B -q test"] },
-    aspnet: { dir: "CLIuno-ASP.NET-template", needs: ["dotnet"], prepare: [], check: ["dotnet build"] },
-    drogon: { dir: "CLIuno-Drogon-template", needs: ["cmake"], prepare: [], check: ["cmake -S . -B build", "cmake --build build"] },
-    react: { dir: "CLIuno-React-template", needs: ["pnpm"], prepare: pnpm, check: ["pnpm build", "pnpm lint"] },
-    next: { dir: "CLIuno-Next-template", needs: ["pnpm"], prepare: pnpm, check: ["pnpm type-check", "pnpm lint", "pnpm build"] },
-    vue: { dir: "CLIuno-Vue-template", needs: ["pnpm"], prepare: ["cp -n .env.example .env", ...pnpm], check: ["pnpm type-check", "pnpm lint", "pnpm build-only"] },
-    nuxt: { dir: "CLIuno-Nuxt-template", needs: ["pnpm"], prepare: pnpm, check: ["npx nuxi typecheck", "pnpm lint", "pnpm build"] },
-    svelte: { dir: "CLIuno-Svelte-template", needs: ["pnpm"], prepare: pnpm, check: ["pnpm check", "pnpm lint", "pnpm build"] },
-    solid: { dir: "CLIuno-Solid-template", needs: ["pnpm"], prepare: pnpm, check: ["npx tsc --noEmit", "pnpm lint", "pnpm build"] },
-    angular: { dir: "CLIuno-Angular-template", needs: ["pnpm"], prepare: pnpm, check: ["pnpm build", "pnpm lint"] },
-    flutter: { dir: "CLIuno-Flutter-template", needs: ["flutter"], prepare: ["flutter pub get"], check: ["flutter analyze", "flutter test"] },
-    reactnative: { dir: "CLIuno-ReactNative-template", needs: ["npm"], prepare: ["npm ci --silent"], check: ["npm run type-check", "npm run lint"] },
+    express: {
+        dir: "CLIuno-Express-template",
+        needs: ["pnpm"],
+        prepare: pnpm,
+        check: [
+            "pnpm type-check",
+            "pnpm lint",
+            "pnpm build",
+            "npx jest --passWithNoTests src/__tests__/widget.spec.ts",
+        ],
+    },
+    fastify: {
+        dir: "CLIuno-Fastify-template",
+        needs: ["pnpm"],
+        prepare: pnpm,
+        check: ["pnpm type-check", "pnpm lint", "pnpm build"],
+    },
+    nest: {
+        dir: "CLIuno-Nest-template",
+        needs: ["pnpm"],
+        prepare: pnpm,
+        check: ["pnpm build", "pnpm lint", "pnpm test"],
+    },
+    adonis: {
+        dir: "CLIuno-Adonis-template",
+        needs: ["pnpm"],
+        prepare: pnpm,
+        check: ["pnpm typecheck", "pnpm lint"],
+    },
+    django: {
+        dir: "CLIuno-Django-template",
+        needs: ["uv"],
+        prepare: ["uv sync"],
+        check: [
+            "uv run python manage.py makemigrations",
+            "uv run python manage.py test",
+            "uv run ruff check .",
+        ],
+    },
+    fastapi: {
+        dir: "CLIuno-FastAPI-template",
+        needs: ["uv"],
+        prepare: ["uv sync --extra dev"],
+        check: ["uv run pytest tests/ -q", "uv run ruff check ."],
+    },
+    laravel: {
+        dir: "CLIuno-Laravel-template",
+        needs: ["php", "composer"],
+        prepare: [
+            "composer install --prefer-dist --no-interaction --quiet",
+            "cp -n .env.example .env",
+            "php artisan key:generate --quiet",
+            "touch database/database.sqlite",
+        ],
+        check: ["php artisan test", "vendor/bin/pint --test"],
+    },
+    tallstack: {
+        dir: "CLIuno-TallStack-template",
+        needs: ["php", "composer", "npm"],
+        prepare: [
+            "composer install --prefer-dist --no-interaction --quiet",
+            "cp -n .env.example .env",
+            "php artisan key:generate --quiet",
+            "touch database/database.sqlite",
+            "npm ci --silent",
+            "npm run build --silent",
+        ],
+        check: ["php artisan test", "vendor/bin/pint --test"],
+    },
+    rails: {
+        dir: "CLIuno-Rails-template",
+        needs: ["ruby", "bundle"],
+        prepare: ["bundle install --quiet", "bin/rails db:prepare"],
+        check: ["bin/rails db:migrate", "bin/rails test", "bin/rubocop"],
+    },
+    spring: {
+        dir: "CLIuno-Spring-template",
+        needs: ["java"],
+        prepare: [],
+        check: ["./mvnw -B -q test"],
+    },
+    aspnet: {
+        dir: "CLIuno-ASP.NET-template",
+        needs: ["dotnet"],
+        prepare: [],
+        check: ["dotnet build"],
+    },
+    drogon: {
+        dir: "CLIuno-Drogon-template",
+        needs: ["cmake"],
+        prepare: [],
+        check: ["cmake -S . -B build", "cmake --build build"],
+    },
+    react: {
+        dir: "CLIuno-React-template",
+        needs: ["pnpm"],
+        prepare: pnpm,
+        check: ["pnpm build", "pnpm lint"],
+    },
+    next: {
+        dir: "CLIuno-Next-template",
+        needs: ["pnpm"],
+        prepare: pnpm,
+        check: ["pnpm type-check", "pnpm lint", "pnpm build"],
+    },
+    vue: {
+        dir: "CLIuno-Vue-template",
+        needs: ["pnpm"],
+        prepare: ["cp -n .env.example .env", ...pnpm],
+        check: ["pnpm type-check", "pnpm lint", "pnpm build-only"],
+    },
+    nuxt: {
+        dir: "CLIuno-Nuxt-template",
+        needs: ["pnpm"],
+        prepare: pnpm,
+        check: ["npx nuxi typecheck", "pnpm lint", "pnpm build"],
+    },
+    svelte: {
+        dir: "CLIuno-Svelte-template",
+        needs: ["pnpm"],
+        prepare: pnpm,
+        check: ["pnpm check", "pnpm lint", "pnpm build"],
+    },
+    solid: {
+        dir: "CLIuno-Solid-template",
+        needs: ["pnpm"],
+        prepare: pnpm,
+        check: ["npx tsc --noEmit", "pnpm lint", "pnpm build"],
+    },
+    angular: {
+        dir: "CLIuno-Angular-template",
+        needs: ["pnpm"],
+        prepare: pnpm,
+        check: ["pnpm build", "pnpm lint"],
+    },
+    flutter: {
+        dir: "CLIuno-Flutter-template",
+        needs: ["flutter"],
+        prepare: ["flutter pub get"],
+        check: ["flutter analyze", "flutter test"],
+    },
+    reactnative: {
+        dir: "CLIuno-ReactNative-template",
+        needs: ["npm"],
+        prepare: ["npm ci --silent"],
+        check: ["npm run type-check", "npm run lint"],
+    },
 };
 
 function run(cmd, cwd, env = {}) {
     const started = Date.now();
-    const result = spawnSync(cmd, { cwd, shell: true, stdio: "pipe", encoding: "utf8", env: { ...process.env, VIRTUAL_ENV: undefined, CI: "1", ...env } });
-    return { ok: result.status === 0, out: `${result.stdout ?? ""}${result.stderr ?? ""}`, ms: Date.now() - started };
+    const result = spawnSync(cmd, {
+        cwd,
+        shell: true,
+        stdio: "pipe",
+        encoding: "utf8",
+        env: { ...process.env, VIRTUAL_ENV: undefined, CI: "1", ...env },
+    });
+    return {
+        ok: result.status === 0,
+        out: `${result.stdout ?? ""}${result.stderr ?? ""}`,
+        ms: Date.now() - started,
+    };
 }
 
 const results = [];
@@ -118,7 +261,9 @@ for (const [id, t] of Object.entries(TEMPLATES)) {
 
 console.log("\n" + "id".padEnd(12) + "status  " + "time".padStart(7) + "  detail");
 for (const r of results) {
-    console.log(`${r.id.padEnd(12)}${r.status.padEnd(8)}${String(Math.round(r.ms / 1000) + "s").padStart(7)}  ${r.step}`);
+    console.log(
+        `${r.id.padEnd(12)}${r.status.padEnd(8)}${String(Math.round(r.ms / 1000) + "s").padStart(7)}  ${r.step}`,
+    );
     if (r.status === "FAIL") console.log(r.detail.replace(/^/gm, "    "));
     else if (r.status === "SKIP") console.log(`    ${r.detail}`);
 }

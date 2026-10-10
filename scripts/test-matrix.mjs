@@ -343,7 +343,10 @@ const BACKENDS = [
             // stray root-owned build/ can exist; remove it before the user-owned build.
             [
                 "bash",
-                ["-lc", 'docker run --rm -v "$PWD":/app -w /app drogonframework/drogon:latest rm -rf build cliuno.db'],
+                [
+                    "-lc",
+                    'docker run --rm -v "$PWD":/app -w /app drogonframework/drogon:latest rm -rf build cliuno.db',
+                ],
             ],
             [
                 "bash",
