@@ -142,6 +142,16 @@ const TEMPLATES = {
         prepare: [],
         check: ["cmake -S . -B build", "cmake --build build"],
     },
+    axum: {
+        dir: "CLIuno-Axum-template",
+        needs: ["cargo"],
+        prepare: [],
+        check: [
+            "cargo fmt --check",
+            "cargo clippy --all-targets -- -D warnings",
+            "cargo test --quiet",
+        ],
+    },
     react: {
         dir: "CLIuno-React-template",
         needs: ["pnpm"],
@@ -217,7 +227,9 @@ function run(cmd, cwd, env = {}) {
 if (only) {
     const unknown = only.filter((id) => !(id in TEMPLATES));
     if (unknown.length > 0) {
-        console.error(`Unknown template id(s): ${unknown.join(", ")}. Known: ${Object.keys(TEMPLATES).join(", ")}`);
+        console.error(
+            `Unknown template id(s): ${unknown.join(", ")}. Known: ${Object.keys(TEMPLATES).join(", ")}`,
+        );
         process.exit(2);
     }
 }
@@ -281,7 +293,12 @@ for (const [id, t] of Object.entries(TEMPLATES)) {
         ...t.check.map((c) => ["check", c]),
     ];
     for (const [phase, cmd] of steps) {
-        const shown = Array.isArray(cmd) ? cmd.slice(1).map((a) => JSON.stringify(a)).join(" ") : cmd;
+        const shown = Array.isArray(cmd)
+            ? cmd
+                  .slice(1)
+                  .map((a) => JSON.stringify(a))
+                  .join(" ")
+            : cmd;
         process.stdout.write(`${id.padEnd(12)} ${phase.padEnd(9)} ${shown}\n`);
         const r = Array.isArray(cmd) ? runArgv(cmd, wt) : run(cmd, wt);
         if (!r.ok) {
