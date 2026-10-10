@@ -128,14 +128,14 @@ export default async function ${one}Routes(app: FastifyInstance) {
     app.addHook('preHandler', authenticate)
 
     app.get('/', async (_request, reply) => {
-        const all = await ${many}().find({ relations: ['user'], order: { createdAt: 'DESC' } })
+        const all = await ${many}().find({ relations: { user: true }, order: { createdAt: 'DESC' } })
         return reply.send({ status: 'success', data: { ${many}: all } })
     })
 
     app.get('/current-user', async (request, reply) => {
         const mine = await ${many}().find({
             where: { user: { id: request.user.id } },
-            relations: ['user'],
+            relations: { user: true },
             order: { createdAt: 'DESC' },
         })
         return reply.send({ status: 'success', data: { ${many}: mine } })
@@ -162,7 +162,7 @@ ${assign}
 
     app.get('/:id', async (request, reply) => {
         const { id } = request.params as { id: string }
-        const ${one} = await ${many}().findOne({ where: { id }, relations: ['user'] })
+        const ${one} = await ${many}().findOne({ where: { id }, relations: { user: true } })
         if (!${one}) {
             return reply.status(404).send({ status: 'error', message: '${title} not found' })
         }
@@ -171,7 +171,7 @@ ${assign}
 
     app.patch('/:id', async (request, reply) => {
         const { id } = request.params as { id: string }
-        const ${one} = await ${many}().findOne({ where: { id }, relations: ['user'] })
+        const ${one} = await ${many}().findOne({ where: { id }, relations: { user: true } })
         if (!${one}) {
             return reply.status(404).send({ status: 'error', message: '${title} not found' })
         }
@@ -188,7 +188,7 @@ ${updates}
 
     app.delete('/:id', async (request, reply) => {
         const { id } = request.params as { id: string }
-        const ${one} = await ${many}().findOne({ where: { id }, relations: ['user'] })
+        const ${one} = await ${many}().findOne({ where: { id }, relations: { user: true } })
         if (!${one}) {
             return reply.status(404).send({ status: 'error', message: '${title} not found' })
         }

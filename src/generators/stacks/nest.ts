@@ -152,7 +152,7 @@ export class ${P}Service {
 
   async getAll() {
     const ${many} = await this.${one}Repository.find({
-      relations: ['user'],
+      relations: { user: true },
       order: { createdAt: 'DESC' },
     })
     return { status: 'success', message: '${titles} fetched successfully', data: { ${many} } }
@@ -161,7 +161,7 @@ export class ${P}Service {
   async getById(id: string) {
     const ${one} = await this.${one}Repository.findOne({
       where: { id },
-      relations: ['user'],
+      relations: { user: true },
     })
     if (!${one}) throw new NotFoundException('${title} not found')
     return { status: 'success', message: '${title} fetched successfully', data: { ${one} } }
@@ -170,7 +170,7 @@ export class ${P}Service {
   async getCurrentUser${names.plural.pascal}(userId: string) {
     const ${many} = await this.${one}Repository.find({
       where: { user: { id: userId } },
-      relations: ['user'],
+      relations: { user: true },
       order: { createdAt: 'DESC' },
     })
     return { status: 'success', message: '${titles} fetched successfully', data: { ${many} } }
@@ -189,7 +189,7 @@ ${assign}
   }
 
   async update(userId: string, id: string, dto: Update${P}Dto) {
-    const ${one} = await this.${one}Repository.findOne({ where: { id }, relations: ['user'] })
+    const ${one} = await this.${one}Repository.findOne({ where: { id }, relations: { user: true } })
     if (!${one}) throw new NotFoundException('${title} not found')
     if (${one}.user.id !== userId) throw new ForbiddenException('You can only update your own ${lowerPlural}')
 
@@ -200,7 +200,7 @@ ${updates}
   }
 
   async delete(userId: string, id: string) {
-    const ${one} = await this.${one}Repository.findOne({ where: { id }, relations: ['user'] })
+    const ${one} = await this.${one}Repository.findOne({ where: { id }, relations: { user: true } })
     if (!${one}) throw new NotFoundException('${title} not found')
     if (${one}.user.id !== userId) throw new ForbiddenException('You can only delete your own ${lowerPlural}')
 

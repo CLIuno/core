@@ -108,7 +108,7 @@ export const ${P}Controller = {
     getAll: async (req: Request, res: Response): Promise<void> => {
         try {
             const ${many} = await myDataSource.getRepository(${P}).find({
-                relations: ['user'],
+                relations: { user: true },
                 order: { createdAt: 'DESC' },
             })
             res.status(200).json({
@@ -126,7 +126,7 @@ export const ${P}Controller = {
         try {
             const ${one} = await myDataSource.getRepository(${P}).findOne({
                 where: { id: req.params.id as string },
-                relations: ['user'],
+                relations: { user: true },
             })
             if (!${one}) {
                 res.status(404).json({ status: 'error', message: '${title} not found' })
@@ -148,7 +148,7 @@ export const ${P}Controller = {
             const userId = (req as any).user.id
             const ${many} = await myDataSource.getRepository(${P}).find({
                 where: { user: { id: userId } },
-                relations: ['user'],
+                relations: { user: true },
                 order: { createdAt: 'DESC' },
             })
             res.status(200).json({
@@ -197,7 +197,7 @@ ${assign}
             const userId = (req as any).user.id
             const ${one} = await myDataSource.getRepository(${P}).findOne({
                 where: { id: req.params.id as string },
-                relations: ['user'],
+                relations: { user: true },
             })
 
             if (!${one}) {
@@ -233,7 +233,7 @@ ${updates}
             const userId = (req as any).user.id
             const ${one} = await myDataSource.getRepository(${P}).findOne({
                 where: { id: req.params.id as string },
-                relations: ['user'],
+                relations: { user: true },
             })
 
             if (!${one}) {
