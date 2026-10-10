@@ -28,8 +28,10 @@ function getBackendCommands(packageManager: string): { [key: string]: string[] }
         Django: ["uv sync"],
         FastAPI: ["uv sync"],
         Rails: ["bundle install"],
-        "Spring Boot": ["mvn clean install"],
+        "Spring Boot": ["./mvnw -q -DskipTests package"], // the template ships the Maven wrapper
         "ASP.NET": [],
+        Drogon: [], // builds with CMake/Docker — see the template README
+        Axum: ["cargo build"],
     };
 }
 

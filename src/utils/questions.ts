@@ -62,6 +62,7 @@ export const questions = {
             { name: "Spring Boot", value: "Spring Boot" },
             { name: "ASP.NET", value: "ASP.NET" },
             { name: "Drogon", value: "Drogon" },
+            { name: "Axum", value: "Axum" },
             { name: "Without Backend", value: "Without Backend" },
         ],
     },

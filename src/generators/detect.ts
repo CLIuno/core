@@ -14,6 +14,7 @@ export type StackId =
     | "spring"
     | "aspnet"
     | "drogon"
+    | "axum"
     | "react"
     | "next"
     | "vue"
@@ -142,6 +143,11 @@ export const PROBES: readonly Probe[] = [
         test: (d) => (read(d, "CMakeLists.txt") ?? "").includes("Drogon"),
     },
     {
+        stack: "axum",
+        describe: "Cargo.toml depends on axum",
+        test: (d) => /^\s*axum\s*=/m.test(read(d, "Cargo.toml") ?? ""),
+    },
+    {
         stack: "flutter",
         describe: "pubspec.yaml depends on flutter",
         test: (d) => /^\s+flutter:\s*$/m.test(read(d, "pubspec.yaml") ?? ""),
@@ -197,6 +203,7 @@ export const PROBES: readonly Probe[] = [
 ];
 
 const MANIFESTS = [
+    "Cargo.toml",
     "package.json",
     "composer.json",
     "pyproject.toml",

@@ -38,6 +38,10 @@ const cases: Array<[string, Record<string, string>]> = [
     ],
     ["aspnet", { "Api/Api.csproj": '<Project Sdk="Microsoft.NET.Sdk.Web"></Project>' }],
     ["drogon", { "CMakeLists.txt": "find_package(Drogon CONFIG REQUIRED)" }],
+    [
+        "axum",
+        { "Cargo.toml": '[package]\nname = "x"\n\n[dependencies]\naxum = "0.8"\ntokio = "1"\n' },
+    ],
     ["flutter", { "pubspec.yaml": "dependencies:\n  flutter:\n    sdk: flutter\n" }],
     ["nest", { "package.json": pkg({ "@nestjs/core": "1", express: "1" }) }],
     ["adonis", { "package.json": pkg({ "@adonisjs/core": "1" }) }],

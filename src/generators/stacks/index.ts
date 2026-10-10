@@ -12,6 +12,7 @@ import { rails } from "./rails";
 import { spring } from "./spring";
 import { aspnet } from "./aspnet";
 import { drogon } from "./drogon";
+import { axum } from "./axum";
 import { react } from "./react";
 import { next } from "./next";
 import { vue } from "./vue";
@@ -35,6 +36,7 @@ export const generators: Record<StackId, Generator> = {
     spring,
     aspnet,
     drogon,
+    axum,
     react,
     next,
     vue,

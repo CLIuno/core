@@ -41,7 +41,7 @@ const frameworks: FrameworkCheck[] = [
     { name: "Rails", required: ["ruby", "gem", "bundler", "rails"] },
 
     // JVM based
-    { name: "Spring Boot", required: ["java", "mvn"] },
+    { name: "Spring Boot", required: ["java"] },
 
     // .NET based
     { name: "ASP.NET", required: ["dotnet"] },

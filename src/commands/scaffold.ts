@@ -14,6 +14,7 @@ const noJsPackageManager = new Set([
     "Spring Boot",
     "ASP.NET",
     "Drogon",
+    "Axum",
     "Without Backend",
 ]);
 
