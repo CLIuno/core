@@ -17,7 +17,7 @@
  * Zero dependencies. Requires Node >= 18 (global fetch).
  */
 
-import { spawn, execFileSync } from "node:child_process";
+import { spawn, spawnSync, execFileSync } from "node:child_process";
 import crypto from "node:crypto";
 import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import net from "node:net";
@@ -76,6 +76,34 @@ const sqliteRead = (dir, dbFile, table, col, email) =>
     )
         .toString()
         .trim();
+
+/** A host .NET SDK new enough for the template's TargetFramework, else undefined (→ Docker). */
+const HOST_DOTNET = (() => {
+    let major = 0;
+    try {
+        const csproj = readFileSync(
+            path.join(ROOT, "CLIuno-ASP.NET-template", "BackendASP.NET", "BackendASP.NET.csproj"),
+            "utf8",
+        );
+        major = Number(csproj.match(/<TargetFramework>net(\d+)/)?.[1] ?? 0);
+    } catch {
+        return undefined;
+    }
+    for (const bin of [
+        `${process.env.HOME}/.dotnet/dotnet`,
+        "/usr/bin/dotnet",
+        "/usr/local/bin/dotnet",
+    ]) {
+        if (!existsSync(bin)) continue;
+        const sdks = spawnSync(bin, ["--list-sdks"], { encoding: "utf8" }).stdout ?? "";
+        if (sdks.split("\n").some((l) => Number(l.split(".")[0]) >= major)) return bin;
+    }
+    return undefined;
+})();
+const DOTNET_DOCKER =
+    'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -e DOTNET_CLI_HOME=/tmp ' +
+    '-e NUGET_PACKAGES=/nuget -v "$HOME/.nuget/packages":/nuget -v "$PWD":/app -w /app';
+const DOTNET_IMAGE = "mcr.microsoft.com/dotnet/sdk:10.0";
 
 const BACKENDS = [
     {
@@ -272,11 +300,31 @@ const BACKENDS = [
     {
         id: "aspnet",
         dir: "CLIuno-ASP.NET-template",
-        prepare: [["rm", ["-f", "BackendASP.NET/db.sqlite"]]],
-        start: () => ({
-            cmd: `${process.env.HOME}/.dotnet/dotnet`,
-            args: ["run", "--project", "BackendASP.NET"],
-        }),
+        // Host .NET SDK when present, otherwise the official SDK image (as the host user, with
+        // the NuGet cache on the host) — same idea as the Drogon column.
+        prepare: HOST_DOTNET
+            ? [["rm", ["-f", "BackendASP.NET/db.sqlite"]]]
+            : [
+                  ["docker", ["rm", "-f", "cliuno-aspnet-matrix"]],
+                  ["rm", ["-f", "BackendASP.NET/db.sqlite"]],
+                  [
+                      "bash",
+                      [
+                          "-c",
+                          `mkdir -p "$HOME/.nuget/packages" && ${DOTNET_DOCKER} ${DOTNET_IMAGE} dotnet build BackendASP.NET -v q`,
+                      ],
+                  ],
+              ],
+        start: () =>
+            HOST_DOTNET
+                ? { cmd: HOST_DOTNET, args: ["run", "--project", "BackendASP.NET"] }
+                : {
+                      cmd: "bash",
+                      args: [
+                          "-c",
+                          `exec ${DOTNET_DOCKER} --init --name cliuno-aspnet-matrix -p 127.0.0.1:${PORT}:${PORT} -e PORT=${PORT} -e ASPNETCORE_URLS=http://0.0.0.0:${PORT} ${DOTNET_IMAGE} dotnet run --no-build --project BackendASP.NET`,
+                      ],
+                  },
         env: { PORT: String(PORT) },
         readToken: (dir, email, kind) =>
             execFileSync(

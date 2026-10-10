@@ -14,7 +14,7 @@ How each backend template boots, stores data, and verifies. The matrix registry 
 | **Fastify**   | `node_modules/.bin/tsx src/app.ts` (`PORT`, `JWT_SECRET_KEY`, `REFRESH_JWT_SECRET_KEY`)                   | sqlite `db.sqlite`, TypeORM `synchronize: true`, table `Users`                     | `tsc --noEmit` · `oxlint .` · `oxfmt --check src/`                         |
 | **Adonis**    | `node ace migration:run --force` then `node ace serve` (`APP_KEY` ≥32 chars, `HOST`, `LOG_LEVEL`, `TZ`)   | sqlite `tmp/db.sqlite3`, Lucid migrations                                          | `pnpm typecheck` · `oxlint .`                                              |
 | **Spring**    | `./mvnw -q -DskipTests package` then `java -jar target/cliuno-spring-template-*.jar`                      | sqlite `db.sqlite`, Hibernate `ddl-auto=update`                                    | `./mvnw test` (context loads)                                              |
-| **ASP.NET**   | `~/.dotnet/dotnet run --project BackendASP.NET` (`PORT`)                                                  | sqlite `BackendASP.NET/db.sqlite`, EF Core `EnsureCreated` (PascalCase columns)    | `dotnet build` (0 warnings)                                                |
+| **ASP.NET**   | host `dotnet run` if an SDK ≥ the TargetFramework exists, else `dotnet/sdk:10.0` in Docker (host user)    | sqlite `BackendASP.NET/db.sqlite`, EF Core `EnsureCreated` (PascalCase columns)    | `dotnet build` (0 warnings)                                                |
 | **TallStack** | `php artisan migrate --force` then `artisan serve` (same as Laravel)                                      | sqlite `database/database.sqlite`, migrations                                      | `php artisan test` (43) · `./vendor/bin/pint --test`                       |
 | **Drogon**    | builds + runs inside `drogonframework/drogon:latest` via `docker run` (host needs docker + the image)     | sqlite `cliuno.db`, volume-mounted from the repo dir, created on boot              | build in the image (`cmake --build`); CI also smoke-tests register/login   |
 | **Axum**      | `cargo build --release` then `target/release/cliuno-axum-template` (`PORT`, `DATABASE_URL`)               | sqlite `matrix-test.db` (deleted each run), sqlx migrations embedded + run on boot | `cargo fmt --check` · `cargo clippy -- -D warnings` · `cargo test` (14)    |
@@ -81,6 +81,10 @@ How each backend template boots, stores data, and verifies. The matrix registry 
   does not exist there).
 - **Nuxt frontend**: Nuxt 4 layout — the API layer is `app/composables/`; the matrix scans
   both that and the legacy root `composables/`, and fails a frontend whose scan finds 0 calls.
+- **ASP.NET**: .NET 10. The matrix uses a host SDK only when `--list-sdks` covers the
+  csproj's TargetFramework (the machine's `~/.dotnet` 8.x does not); otherwise it builds and
+  runs in `mcr.microsoft.com/dotnet/sdk:10.0` as the host user with `~/.nuget/packages`
+  mounted, so no root-owned `bin/`/`obj/` is left behind.
 - **Axum**: Rust stable, release build in `prepare` (first build takes a few minutes; later
   runs are incremental). `readToken` reads `matrix-test.db` with host `python3`. Login is not
   gated on email verification, so no `activateUser` hook. Ids are integers.
