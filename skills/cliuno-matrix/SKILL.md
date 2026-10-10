@@ -2,7 +2,7 @@
 name: cliuno-matrix
 description: Run, debug, and extend the CLIuno frontend×backend compatibility matrix, and consult the shared API contract every template implements. Use this whenever working in the CLIuno workspace on anything API-shaped — adding or changing an endpoint in any backend template (Express, Nest, Fastify, Adonis, Django, FastAPI, Laravel, TallStack, Rails, Spring, ASP.NET, Drogon, Axum), changing a frontend's API layer (Vue, React, Solid, Next, Svelte, Nuxt, Angular, Flutter, React Native), adding a new template, investigating why a frontend and backend disagree, or when asked to "run the matrix", "check compatibility", "test the templates against each other", or verify the demo-app contract (auth/users/todos/posts/comments/follows/OTP).
 metadata:
-    version: 2.1.1
+    version: 2.2.0
 ---
 
 # CLIuno compatibility matrix

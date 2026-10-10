@@ -2,7 +2,7 @@
 name: cliuno-make
 description: Generate code inside a CLIuno-scaffolded project with `cliuno make:*` instead of hand-writing it. Use this whenever the user, working in any CLIuno template (Express, Fastify, NestJS, AdonisJS, Django, FastAPI, Laravel, TallStack, Rails, Spring Boot, ASP.NET, Drogon, Axum, React, Next, Vue, Nuxt, Svelte, Solid, Angular, Flutter, React Native), asks to add a resource, model, entity, table, endpoint, CRUD, controller, service, migration, validator/DTO, API client, store, page/screen, or UI component — phrases like "add a Product resource", "create an Orders endpoint", "I need a Comments model with …", "add a page for invoices", "make:controller". One command produces a working vertical slice that follows the template's conventions and the shared REST contract; you then only edit fields and business logic.
 metadata:
-    version: 2.1.1
+    version: 2.2.0
 ---
 
 # cliuno make — generate, don't hand-write
