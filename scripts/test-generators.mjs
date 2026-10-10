@@ -5,6 +5,7 @@
 //   node scripts/test-generators.mjs                 # every template
 //   node scripts/test-generators.mjs --only express,react
 //   node scripts/test-generators.mjs --keep          # leave the worktrees for inspection
+//   node scripts/test-generators.mjs --scratch dir --clean   # reuse a scratch dir, discarding old worktrees
 //   node scripts/test-generators.mjs --fields name:string,price:number
 //   node scripts/test-generators.mjs --cli dist-nest/app.js   # use a separate build output
 import { spawnSync } from "node:child_process";
@@ -27,8 +28,14 @@ const fields =
     typeof flag("fields") === "string"
         ? flag("fields")
         : "name:string,price:number,done:boolean,due:date?";
+// Every run gets a fresh scratch directory unless --scratch is given; an existing worktree there
+// (e.g. one kept with --keep and edited since) is never deleted unless --clean is passed too.
 const scratch =
-    typeof flag("scratch") === "string" ? flag("scratch") : path.join(os.tmpdir(), "cliuno-gen");
+    typeof flag("scratch") === "string"
+        ? path.resolve(flag("scratch"))
+        : fs.mkdtempSync(path.join(os.tmpdir(), "cliuno-gen-"));
+const clean = flag("clean") === true;
+const ownScratch = typeof flag("scratch") !== "string";
 // --cli <path> lets parallel workers use their own build (e.g. `pnpm exec tsup --out-dir dist-x`).
 const cli = path.resolve(
     core,
@@ -207,6 +214,24 @@ function run(cmd, cwd, env = {}) {
     };
 }
 
+if (only) {
+    const unknown = only.filter((id) => !(id in TEMPLATES));
+    if (unknown.length > 0) {
+        console.error(`Unknown template id(s): ${unknown.join(", ")}. Known: ${Object.keys(TEMPLATES).join(", ")}`);
+        process.exit(2);
+    }
+}
+
+function runArgv([bin, ...argv], cwd) {
+    const started = Date.now();
+    const result = spawnSync(bin, argv, { cwd, stdio: "pipe", encoding: "utf8" });
+    return {
+        ok: result.status === 0,
+        out: `${result.stdout ?? ""}${result.stderr ?? ""}`,
+        ms: Date.now() - started,
+    };
+}
+
 const results = [];
 fs.mkdirSync(scratch, { recursive: true });
 
@@ -229,8 +254,17 @@ for (const [id, t] of Object.entries(TEMPLATES)) {
     }
 
     const wt = path.join(scratch, id);
-    run(`git worktree remove --force "${wt}"`, repo);
-    fs.rmSync(wt, { recursive: true, force: true });
+    if (fs.existsSync(wt)) {
+        if (!clean) {
+            row.status = "FAIL";
+            row.step = "worktree";
+            row.detail = `${wt} already exists (kept by an earlier --keep run?). Re-run with --clean to discard it.`;
+            continue;
+        }
+        run(`git worktree remove --force "${wt}"`, repo);
+        fs.rmSync(wt, { recursive: true, force: true });
+    }
+    run("git worktree prune", repo);
     const add = run(`git worktree add --detach "${wt}" HEAD`, repo);
     if (!add.ok) {
         row.status = "FAIL";
@@ -239,17 +273,20 @@ for (const [id, t] of Object.entries(TEMPLATES)) {
         continue;
     }
 
+    // The generate step is an argv array (no shell) so --fields reaches the CLI as one argument.
+    const generate = [process.execPath, cli, "make:resource", "Widget", "--fields", fields];
     const steps = [
         ...t.prepare.map((c) => ["prepare", c]),
-        ["generate", `node "${cli}" make:resource Widget --fields ${fields}`],
+        ["generate", generate],
         ...t.check.map((c) => ["check", c]),
     ];
     for (const [phase, cmd] of steps) {
-        process.stdout.write(`${id.padEnd(12)} ${phase.padEnd(9)} ${cmd}\n`);
-        const r = run(cmd, wt);
+        const shown = Array.isArray(cmd) ? cmd.slice(1).map((a) => JSON.stringify(a)).join(" ") : cmd;
+        process.stdout.write(`${id.padEnd(12)} ${phase.padEnd(9)} ${shown}\n`);
+        const r = Array.isArray(cmd) ? runArgv(cmd, wt) : run(cmd, wt);
         if (!r.ok) {
             row.status = "FAIL";
-            row.step = `${phase}: ${cmd}`;
+            row.step = `${phase}: ${shown}`;
             row.detail = r.out.trim().split("\n").slice(-25).join("\n");
             break;
         }
@@ -270,4 +307,7 @@ for (const r of results) {
     else if (r.status === "SKIP") console.log(`    ${r.detail}`);
 }
 if (keep) console.log(`\nWorktrees kept under ${scratch}`);
-process.exit(results.some((r) => r.status === "FAIL") ? 1 : 0);
+else if (ownScratch) fs.rmSync(scratch, { recursive: true, force: true });
+// A targeted run (--only) must actually validate what it named: a SKIP there is a failure.
+const failed = results.some((r) => r.status === "FAIL" || (only && r.status === "SKIP"));
+process.exit(failed || results.length === 0 ? 1 : 0);
