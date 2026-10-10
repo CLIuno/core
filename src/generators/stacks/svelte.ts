@@ -325,12 +325,12 @@ ${iface(ctx)}
 	let ${item} = $state<${P} | null>(null);
 
 	onMount(async () => {
-		const res = await api.${item}.get${P}ById($page.params.id);
+		const res = await api.${item}.get${P}ById($page.params.id!);
 		${item} = res.data.data.${item};
 	});
 
 	async function remove() {
-		await api.${item}.delete${P}($page.params.id);
+		await api.${item}.delete${P}($page.params.id!);
 		await goto('/${names.plural.kebab}');
 	}
 </script>
