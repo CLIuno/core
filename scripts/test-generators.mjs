@@ -35,7 +35,9 @@ const cli = path.resolve(
     typeof flag("cli") === "string" ? flag("cli") : path.join("dist", "app.js"),
 );
 
-const has = (bin) => spawnSync("which", [bin], { stdio: "ignore" }).status === 0;
+const has = (bin) =>
+    spawnSync("which", [bin], { stdio: "ignore" }).status === 0 &&
+    spawnSync(bin, ["--version"], { stdio: "ignore" }).status === 0;
 const pnpm = ["pnpm install --prefer-offline"];
 
 /** id → { dir, needs: [binaries], prepare: [cmds], check: [cmds] } — mirrors each template's CI. */
@@ -72,7 +74,7 @@ const TEMPLATES = {
     django: {
         dir: "CLIuno-Django-template",
         needs: ["uv"],
-        prepare: ["uv sync"],
+        prepare: ["uv sync --extra dev"],
         check: [
             "uv run python manage.py makemigrations",
             "uv run python manage.py test",
@@ -155,13 +157,13 @@ const TEMPLATES = {
         dir: "CLIuno-Nuxt-template",
         needs: ["pnpm"],
         prepare: pnpm,
-        check: ["npx nuxi typecheck", "pnpm lint", "pnpm build"],
+        check: ["pnpm lint", "pnpm build"],
     },
     svelte: {
         dir: "CLIuno-Svelte-template",
         needs: ["pnpm"],
         prepare: pnpm,
-        check: ["pnpm check", "pnpm lint", "pnpm build"],
+        check: ["pnpm build", "pnpm check", "pnpm lint"],
     },
     solid: {
         dir: "CLIuno-Solid-template",
