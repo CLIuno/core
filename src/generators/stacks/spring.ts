@@ -22,6 +22,20 @@ const JAVA: Record<FieldType, string> = {
 /** Locals every handler already declares — a field with one of these names gets a suffix. */
 const RESERVED = new Set(["request", "body", "user", "id", "mapper", "auth"]);
 
+/** Spring Boot 4 ships Jackson 3 (`tools.jackson.*`); Boot 3 ships Jackson 2. Annotations stay in com.fasterxml. */
+function jacksonFlavor(ctx: Ctx): 2 | 3 {
+    try {
+        const pom = fs.readFileSync(path.join(ctx.cwd, "pom.xml"), "utf8");
+        const m = pom.match(
+            /<artifactId>spring-boot-starter-parent<\/artifactId>\s*<version>(\d+)\./,
+        );
+        if (m) return Number(m[1]) >= 4 ? 3 : 2;
+    } catch {
+        // no pom (dry-run outside a checkout): assume the current template (Boot 4)
+    }
+    return 3;
+}
+
 function javaType(f: Field): string {
     if (f.type === "boolean" && !f.nullable) return "boolean";
     return JAVA[f.type];
@@ -233,10 +247,15 @@ function controller(ctx: Ctx): FileSpec {
             "java.time.ZoneOffset",
             "java.time.format.DateTimeParseException",
         );
+    const jackson = jacksonFlavor(ctx);
     if (hasJson)
         imports.push(
-            "com.fasterxml.jackson.core.JsonProcessingException",
-            "com.fasterxml.jackson.databind.ObjectMapper",
+            jackson === 3
+                ? "tools.jackson.core.JacksonException"
+                : "com.fasterxml.jackson.core.JsonProcessingException",
+            jackson === 3
+                ? "tools.jackson.databind.ObjectMapper"
+                : "com.fasterxml.jackson.databind.ObjectMapper",
         );
 
     const reads: string[] = [];
@@ -275,7 +294,7 @@ function controller(ctx: Ctx): FileSpec {
             return value instanceof String raw
                     ? mapper.readTree(raw).toString()
                     : mapper.writeValueAsString(value);
-        } catch (JsonProcessingException e) {
+        } catch (${jackson === 3 ? "JacksonException" : "JsonProcessingException"} e) {
             throw new ApiException(400, field + " must be valid JSON");
         }
     }`);
