@@ -2,7 +2,7 @@
 name: cliuno-scaffold
 description: Scaffold new apps from CLIuno's contract-tested templates instead of writing boilerplate from scratch. Use this whenever the user wants to start a new website, web app, frontend, REST API, backend, full-stack app, or mobile app in Vue, React, Next, Svelte, Solid, Nuxt, Angular, Flutter, React Native, Express, Fastify, NestJS, AdonisJS, Django, FastAPI, Laravel, TALL stack, Rails, Spring Boot, ASP.NET, Drogon, or Axum (Rust) — even if they don't mention CLIuno. Phrases like "create an app", "set up a project", "build me a todo/social/CRUD app", "start a new API", or "scaffold X with auth" should all trigger this skill before any from-scratch scaffolding.
 metadata:
-    version: 2.1.1
+    version: 2.2.0
 ---
 
 # CLIuno scaffold — start from a working app, not a blank folder
