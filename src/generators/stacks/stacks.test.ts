@@ -50,12 +50,18 @@ for (const gen of Object.values(generators)) {
                         !file.path.includes("undefined"),
                         `${file.path} has an undefined segment`,
                     );
-                    for (const bad of ["[object Object]", "{{", "NaN"]) {
+                    for (const bad of ["[object Object]", "NaN"]) {
                         assert.ok(
                             !file.content.includes(bad),
                             `${gen.id}:${kind} ${file.path} contains "${bad}"`,
                         );
                     }
+                    // handlebars-style leftovers like {{NAME}}; Vue/Angular `{{ expr }}` interpolation is fine
+                    assert.doesNotMatch(
+                        file.content,
+                        /\{\{[A-Z_]+\}\}/,
+                        `${gen.id}:${kind} ${file.path} has an unfilled placeholder`,
+                    );
                     // "undefined" glued to an identifier means a template placeholder failed to interpolate
                     assert.doesNotMatch(
                         file.content,
